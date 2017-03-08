@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/C:/Users/lgrandgu/Documents/4A/S2/Architecture%20orientee%20service%20SOA/Interoperabilite/Projet/ISIScapitalist/ISIScapitalist/../../schemaMonde.xsd" uri="src/main/resources/jaxb/Capitalist/schemaMonde.xsd"/>
+</catalog>
