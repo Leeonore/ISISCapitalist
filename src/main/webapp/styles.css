@@ -24,12 +24,12 @@ img {
     width : 15%;
 }
 
-.cln1 {
+.product {
     float : left;
     width : 10%;
 }
 
-.cln2 {
+.description {
     float : left;
     margin: 3%;
     width : 30%;
@@ -42,6 +42,7 @@ img {
     border-radius: 10px;
     border: 1px solid white;
     background: black;
+    color:white;
 }
 
 .revenu {
@@ -51,17 +52,51 @@ img {
     width: 100%;
     text-align: center;
 }
-.cout {
-    float : left;
-    }
+
+.revenu svg{
     
-.vitesse  {
-    float : right;    
 }
 
-.cout, .vitesse { 
+.revenuText{
+    
+}
+
+.achat, .vitesse { 
     margin-top: 5px;
     width: 48%;
     border: 1px solid black;    
     text-align: right;
+    padding:5px;
+}
+
+.achat {
+    cursor:pointer;
+    float : left;
+    
+    -webkit-transition: background 0.3s;
+    transition: background 0.3s;
+}
+
+.achat:hover{
+    background:lightgrey;
+}
+
+.achat .achatQuantite{
+    float:left;
+}    
+
+.achat .cout{
+    
+}
+
+.vitesse  {
+    float : right;    
+}
+
+
+
+#commutateur { 
+    border: 1px solid black;    
+    text-align: right;
+    width: 15%
 }

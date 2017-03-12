@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation='src/main/resources/jaxb/Capitalist/schemaMonde.xsd'>
     <name>Farmland</name>
     <logo>icones/farmland.jpg</logo>
-    <money>1.00</money>
+    <money>100</money>
     <score>0</score>
     <totalangels>0</totalangels>
     <activeangels>0</activeangels>
@@ -16,7 +16,7 @@
             <name>poule</name>
             <logo>icones/poule.jpg</logo>
             <cout>1</cout>
-            <croissance>1,07</croissance>
+            <croissance>1.07</croissance>
             <revenu>1</revenu>
             <vitesse>500</vitesse>
             <quantite>0</quantite>
@@ -57,7 +57,7 @@
             <name>Canard</name>
             <logo>icones/canard.jpg</logo>
             <cout>10</cout>
-            <croissance>1,07</croissance>
+            <croissance>1.07</croissance>
             <revenu>10</revenu>
             <vitesse>5000</vitesse>
             <quantite>0</quantite>
