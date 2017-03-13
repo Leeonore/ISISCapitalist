@@ -1,3 +1,5 @@
+/* global windows */
+
 //Script pour récuperer infos
 var serveurUrl = "http://localhost:8080/ISISCapitalist/";
 var currentWorld;
@@ -10,13 +12,13 @@ var bars = [];
 $(document).ready(function () {
     $.getJSON(serveurUrl + "webresources/generic", function (world) {
         
-        // Init world
+        // Initialisation de monde
         currentWorld = world;
         $("#nomMonde").html(currentWorld.name);
         $("#nomMonde").prepend("<img id='imageMonde' src='" + currentWorld.logo + "' alt='test'/>");
         $("#argent").html(currentWorld.money + ' $');
         
-        // Creating products
+        // Création des produits
         $.each(world.products.product, function (index, product) {
             var newProduct =  
                     '<div class="row" id="p'
@@ -31,66 +33,66 @@ $(document).ready(function () {
                         + '<div class="description">'
                             + '<div class="revenu" id="r'
                             + product.id
-                            + '"><span class="revenuText">'+ product.revenu + '</span></div>' 
+                            + '"><span class="revenuText">'+ product.revenu + '</span></div>'
+                            //'<button class="btn btn-default" onClick="BuyProduct('+product+')">Acheter</button>'
+                            //+ '<div class="achatQuantite">x1</div><div class="cout">'+ product.cout + '</div>'
                             + '<div class="achat"><div class="achatQuantite">x1</div><div class="cout">'+ product.cout + '</div></div>'
                             + '<div class="vitesse">'+ product.vitesse + '</div>'
                         + '</div>'
                     + '</div>';
             $("#produits").append(newProduct);
             
-            // Calcul commutateur
+            // Calcul du commutateur au lancement
             commutateur = 1;
             CalcCommutateur();
             
-            // Init progress bar
+            // Initialisation de la bar
             bars[product.id] = new ProgressBar.Line("#r"+product.id, {strokeWidth: 10, color: '#00ff00'});
 
         });
         
-        // Event handler
-        // Start production
-        $(".logo").click(function (event) {
+        
+        
+        // Gestionnaire des évenements
+            // Commencer une production
+            $(".logo").click(function (event) {
             id = $(this).parents(".row").attr("id").substr(1) - 1;
             StartProduction(id);
         });
-     
-        // Buy product
-        $(".achat").click(function (event) {
-            let id = $(this).parents(".row").attr("id").substr(1) - 1;
-            let product = currentWorld.products.product[id];
-            let cout = product.currentCout;
-            let quantite = product.currentQuantite;
-            if (currentWorld.money >= cout){
-                currentWorld.money = Math.round((currentWorld.money - cout)*100)/100;
-                product.quantite = product.quantite + quantite;
-                product.cout = Math.round((product.cout * Math.pow(product.croissance,quantite))*100)/100;
-                CalcCommutateur();
-                $("#argent").html(currentWorld.money + ' $');
-                $("#p"+ product.id + " .quantite").html(product.quantite);
-            }            
-        });
-        
-        // Finally, start loop
-        setInterval(function() { calcScore(); }, 2000); //Appeler la fonction calcScore toutes les 100ms 
+
+            // Acheter un produit
+            $(".achat").click(function (event) {
+                let id = $(this).parents(".row").attr("id").substr(1) - 1;
+                let product = currentWorld.products.product[id];
+                BuyProduct(product);            
+            });
+
+            // Calcul score prediodiquement
+            setInterval(function() { 
+                calcScore();
+            }, 2000); //Appeler la fonction calcScore toutes les 100ms 
     });
     
     
     //Calculer le score
     function calcScore() {
         $.each(currentWorld.products.product, function (index, product) {
-            if(product.timeleft === 0){ 
-
-            }
+            if(product.timeleft === 0){}
             else {
-                console.log(product.timeleft);
                 product.timeleft = product.timeleft -(Date.now() - product.lastupdate);  
                 if (product.timeleft <=0){
                     product.timeleft = 0;
-                    currentWorld.money = Math.round((currentWorld.money + product.revenu*product.quantite)*100)/100;
+                    revenu = product.revenu * product.quantite;
+                    currentWorld.money = formatNumber(parseInt(currentWorld.money) + revenu);
                     bars[product.id].set(0);
                     $("#argent").html(currentWorld.money + ' $');
                 }
             }
+            if (product.managerUnlocked === true){
+                StartProduction(product.id -1);
+            }
+            //condition à faire
+            $("#managersbutton .badge").text("New");
         });            
     }
     
@@ -107,13 +109,12 @@ $(document).ready(function () {
     
     // Calcul cout
     function calculCout(cout, croissance, n){
-        if(n === 1){
-            return cout;
-        }else if(n === 0){
+        if(n === 0){
             return 0;
         }else{
-            return Math.round((cout * ((1 - Math.pow(croissance,n+1))/(1-croissance)))*100)/100;
+            return formatNumber(cout * ((1 - Math.pow(croissance,n))/(1-croissance)));
         }
+        
     }
     
     //Calcul de quantite max
@@ -129,17 +130,17 @@ $(document).ready(function () {
         return n-1;
     }
     
-    
     // Mise en place du commutateur
     $("#commutateur").click(function (event) {
         commutateur += 1;
         CalcCommutateur();
     });
-        
+    
+    // Calculer prix/commutateur
     function CalcCommutateur(){
         let n;
         if (commutateur < 4){            
-           n = Math.pow(10,commutateur-1);
+           n = Math.pow(10,(commutateur-1));
            $.each(currentWorld.products.product, function (index, product) {             
                 let cout = calculCout(product.cout,product.croissance,n);
                 $("#p"+ product.id +" .achatQuantite").html("x"+ n);
@@ -161,4 +162,83 @@ $(document).ready(function () {
         }
         $("#commutateur").html("<img src='icones/commutateur" + commutateur + ".png' alt='test'/>");
     }
+    
+    //Acheter un produit
+    function BuyProduct(product){
+        let cout = product.currentCout;
+            let quantite = product.currentQuantite;
+            if (currentWorld.money >= cout){
+                currentWorld.money = formatNumber(currentWorld.money - cout);
+                product.quantite = product.quantite + quantite;
+                product.cout = formatNumber(product.cout * Math.pow(product.croissance,quantite));
+                CalcCommutateur();
+                $("#argent").html(currentWorld.money + ' $');
+                $("#p"+ product.id + " .quantite").html(product.quantite);
+            }
+    }
+
+    $("#managersbutton").click(function () {
+        $("#managers").modal('show');
+        //Création des managers
+        ListerManager();
+
+    });
 });
+
+function ListerManager(){
+    let newManager = '';
+        $.each(currentWorld.managers.pallier, function (index, pallier) {
+            let id = pallier.idcible - 1;
+            if (pallier.unlocked === false) {
+            newManager = newManager 
+                        + '<div class="row" id="m'
+                        + id
+                        + '">' 
+                            + "<img id='logo' src='" + pallier.logo + "'/>" 
+                            + '<div class="description">'
+                                + '<div class="name">' + pallier.name + '</div>'
+                                + '<div class="objectif"> Lancer la production de ' + currentWorld.products.product[id].name + '</div>'
+                                + '<div class="seuil">' + pallier.seuil + '</div>'
+                            + '</div>';
+                if (pallier.seuil > currentWorld.money) {
+                    newManager = newManager 
+                    +'<button id="hireButton" class="btn btn-default" type="submit" disabled="disabled" >Hire</button>'
+                            + '</div>';
+                } else {
+                    newManager = newManager 
+                    +'<button id="hireButton" class="btn btn-default" onclick="Hire('
+                    + id
+                    + ')" type="submit">Hire</button>'
+                            + '</div>';
+                }
+            }
+        });
+        $(".modal-body").html(newManager);
+}
+
+function Hire(id){
+    let manager = currentWorld.managers.pallier[id];
+    let prix = manager.seuil;
+    currentWorld.money = currentWorld.money - prix;
+    $("#argent").html(currentWorld.money + ' $');
+    manager.unlocked = true;
+    currentWorld.products.product[id].managerUnlocked = true;
+    let toast;
+    ListerManager();
+    toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"}; 
+    toastr.success("Manager Hired ! ");
+}
+
+function formatNumber(number) { 
+    if (number < 1000) 
+        number = number.toFixed(2); 
+    else if (number < 1000000) 
+        number = number.toFixed(0);
+    else if (number >= 1000000) { 
+        console.log(parseInt(number, 10));
+         number = number.toPrecision(4);
+         number = number.replace(/e\+(.*)/, " x 10 <sup>$1</sup>");
+    } 
+    return number; 
+}
+

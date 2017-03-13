@@ -81,7 +81,7 @@ img {
     background:lightgrey;
 }
 
-.achat .achatQuantite{
+.achat .achatQuantite, #managerlogo{
     float:left;
 }    
 
@@ -93,10 +93,21 @@ img {
     float : right;    
 }
 
-
-
 #commutateur { 
     border: 1px solid black;    
     text-align: right;
     width: 15%
+}
+
+#logo{
+    width:30%;
+    float : left;
+}
+
+#description {
+    text-align: center;
+}
+
+#hireButton{
+    float : left;
 }

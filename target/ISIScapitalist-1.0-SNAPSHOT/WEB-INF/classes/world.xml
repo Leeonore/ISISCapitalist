@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation='src/main/resources/jaxb/Capitalist/schemaMonde.xsd'>
     <name>Farmland</name>
     <logo>icones/farmland.jpg</logo>
-    <money>100</money>
+    <money>1000000</money>
     <score>0</score>
     <totalangels>0</totalangels>
     <activeangels>0</activeangels>
@@ -29,7 +29,7 @@
                     <seuil>25</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>VITESSE</typeratio>
+                    <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -38,7 +38,7 @@
                     <seuil>50</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>VITESSE</typeratio>
+                    <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -47,7 +47,7 @@
                     <seuil>100</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>VITESSE</typeratio>
+                    <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
             </palliers>
@@ -62,7 +62,7 @@
             <vitesse>5000</vitesse>
             <quantite>0</quantite>
             <timeleft>0</timeleft>
-            <managerUnlocked>False</managerUnlocked>
+            <managerUnlocked>false</managerUnlocked>
             <palliers>
                 <pallier>
                     <name>Canard WC</name>
@@ -70,7 +70,7 @@
                     <seuil>25</seuil>
                     <idcible>2</idcible>
                     <ratio>2</ratio>
-                    <typeratio>VITESSE</typeratio>
+                    <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -79,7 +79,7 @@
                     <seuil>50</seuil>
                     <idcible>2</idcible>
                     <ratio>2</ratio>
-                    <typeratio>VITESSE</typeratio>
+                    <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -88,13 +88,13 @@
                     <seuil>100</seuil>
                     <idcible>2</idcible>
                     <ratio>2</ratio>
-                    <typeratio>VITESSE</typeratio>
+                    <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
             </palliers>
         </product>
     </products>
-    <allunlocks>
+        <allunlocks>
         <pallier>
             <name></name>
             <logo></logo>
@@ -124,14 +124,13 @@
         </pallier>
     </allunlocks>
     <upgrades>
-        <palliers>
                 <pallier>
                     <name>Upgrade1</name>
                     <logo>icones/upgrade.png</logo>
                     <seuil>250000</seuil>
                     <idcible>1</idcible>
                     <ratio>3</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -140,7 +139,7 @@
                     <seuil>500000</seuil>
                     <idcible>2</idcible>
                     <ratio>3</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -149,7 +148,7 @@
                     <seuil>1000000</seuil>
                     <idcible>-1</idcible>
                     <ratio>3</ratio>
-                    <typeratio>VITESSE</typeratio>
+                    <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -158,7 +157,7 @@
                     <seuil>2000000</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -167,7 +166,7 @@
                     <seuil>4000000</seuil>
                     <idcible>0</idcible>
                     <ratio>2</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -176,7 +175,7 @@
                     <seuil>8000000</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>VITESSE</typeratio>
+                    <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -185,7 +184,7 @@
                     <seuil>16000000</seuil>
                     <idcible>2</idcible>
                     <ratio>2</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -194,7 +193,7 @@
                     <seuil>32000000</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -203,7 +202,7 @@
                     <seuil>64000000</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
@@ -212,47 +211,43 @@
                     <seuil>128000000</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
-            </palliers>
     </upgrades>
     <angelupgrades>
-        <palliers>
                 <pallier>
-                    <name>Angel1</name>
+                    <name>angel1</name>
                     <logo>icones/angel.png</logo>
                     <seuil>10000</seuil>
                     <idcible>0</idcible>
                     <ratio>3</ratio>
-                    <typeratio>GAIN</typeratio>
+                    <typeratio>gain</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
-                    <name>Angel2</name>
+                    <name>angel2</name>
                     <logo>icones/angel.png</logo>
                     <seuil>100000</seuil>
                     <idcible>-1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>ANGE</typeratio>
+                    <typeratio>ange</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
-                    <name>Angel3</name>
+                    <name>angel3</name>
                     <logo>icones/angel.png</logo>
                     <seuil>100000000</seuil>
                     <idcible>-1</idcible>
                     <ratio>2</ratio>
-                    <typeratio>ANGE</typeratio>
+                    <typeratio>ange</typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
-            </palliers>
     </angelupgrades>
     <managers>
-        <palliers>
                 <pallier>
                     <name>Manager1</name>
-                    <logo>icones/manager.png</logo>
+                    <logo>icones/Nicolas.jpg</logo>
                     <seuil>1000</seuil>
                     <idcible>1</idcible>
                     <ratio></ratio>
@@ -261,14 +256,13 @@
                 </pallier>
                 <pallier>
                     <name>Manager2</name>
-                    <logo>icones/manager.png</logo>
+                    <logo>icones/Eshane.jpg</logo>
                     <seuil>15000</seuil>
                     <idcible>2</idcible>
                     <ratio></ratio>
                     <typeratio></typeratio>
                     <unlocked>false</unlocked>
                 </pallier>
-            </palliers>
     </managers>
 
 </world>
