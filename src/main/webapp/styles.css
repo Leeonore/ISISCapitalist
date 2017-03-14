@@ -74,8 +74,8 @@ img {
     float:left;
 }    
 
-.achat .cout{
-    
+#buyButton{
+    float : left;
 }
 
 .time  {

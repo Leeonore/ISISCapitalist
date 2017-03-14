@@ -28,13 +28,13 @@ $(document).ready(function () {
                             + '<div class="quantite">'+ product.quantite + '</div>'
                         + '</div>'
                         + '<div class="description">'
-                            + '<div class="revenu" id="r'
-                            + product.id
-                            + '"><span class="revenuText">'+ product.revenu + '</span></div>'
-                            //+ '<div class="achatQuantite">x1</div><div class="cout">'+ product.cout + '</div>'
+                            + '<div class="revenu" id="r' + product.id + '">'
+                                +'<span class="revenuText">'+ product.revenu + '</span>'
+                            +'</div>'
                             + '<div class="achat">'
-                            +'<div class="achatQuantite">x1</div>'
-                            +'<div class="cout">'+ product.cout + '</div></div>'
+                                +'<button id="buyButton" class="btn btn-default" disable="false" onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button>'
+                                +'<div class="cout">'+ product.cout + '</div>'
+                            +'</div>'
                             + '<div class="time"></div>'
                         + '</div>'
                     + '</div>';
@@ -58,8 +58,8 @@ $(document).ready(function () {
 
             // Acheter un produit
             $(".achat").click(function (event) {
-                let id = $(this).parents(".row").attr("id").substr(1) - 1;
-                let product = currentWorld.products.product[id];
+                var id = $(this).parents(".row").attr("id").substr(1) - 1;
+                var product = currentWorld.products.product[id];
                 BuyProduct(product);            
             });
 
@@ -86,6 +86,9 @@ $(document).ready(function () {
             }
             if (product.managerUnlocked === true){
                 StartProduction(product.id -1);
+            }
+            if (product.currentCout < currentWorld.money){
+                document.getElementById("buyButton").disabled = true; //TODO : differencier button
             }
             //condition à faire
             $("#managersbutton .badge").text("New");
@@ -137,24 +140,25 @@ $(document).ready(function () {
     
     // Calculer prix/commutateur
     function CalcCommutateur(){
-        let n;
+        var n;
         if (commutateur < 4){            
            n = Math.pow(10,(commutateur-1));
            $.each(currentWorld.products.product, function (index, product) {             
-                let cout = calculCout(product.cout,product.croissance,n);
-                $("#p"+ product.id +" .achatQuantite").html("x"+ n);
+                var cout = calculCout(product.cout,product.croissance,n);
+                $("#p"+ product.id +" #buyButton").html("Buy x"+ n);
                 $("#p"+ product.id +" .cout").html(formatNumber(cout));
                 product.currentCout = cout;
                 product.currentQuantite = n;
+                
             });
             $("#commutateurButton").html("Buy </br> x " + n);
         }
         else if (commutateur >= 4) {             
             commutateur = 0;
             $.each(currentWorld.products.product, function (index, product) {
-                let quantiteMax = calculQuantiteMax(product);
-                let cout = calculCout(product.cout,product.croissance,quantiteMax);
-                $("#p"+ product.id +" .achatQuantite").html("x"+ quantiteMax);
+                var quantiteMax = calculQuantiteMax(product);
+                var cout = calculCout(product.cout,product.croissance,quantiteMax);
+                $("#p"+ product.id +" #buyButton").html("Buy x"+ quantiteMax);
                 $("#p"+ product.id +" .cout").html(formatNumber(cout));
                 product.currentCout = cout;
                 product.currentQuantite = quantiteMax;                
@@ -165,8 +169,8 @@ $(document).ready(function () {
     
     //Acheter un produit
     function BuyProduct(product){
-        let cout = product.currentCout;
-            let quantite = product.currentQuantite;
+        var cout = product.currentCout;
+            var quantite = product.currentQuantite;
             if (currentWorld.money >= cout){
                 currentWorld.money = currentWorld.money - cout;
                 product.quantite = product.quantite + quantite;
@@ -186,9 +190,9 @@ $(document).ready(function () {
 });
 
 function ListerManager(){
-    let newManager = '';
+    var newManager = '';
         $.each(currentWorld.managers.pallier, function (index, pallier) {
-            let id = pallier.idcible - 1;
+            var id = pallier.idcible - 1;
             if (pallier.unlocked === false) {
             newManager = newManager 
                         + '<div class="row" id="m'
@@ -216,15 +220,18 @@ function ListerManager(){
         });
         $(".modal-body").html(newManager);
 }
+document.getElementById("buyButton").addEventListener("click", function(){
+    document.getElementById("demo").innerHTML = "Hello World";
+});
 
 function Hire(id){
-    let manager = currentWorld.managers.pallier[id];
-    let prix = manager.seuil;
+    var manager = currentWorld.managers.pallier[id];
+    var prix = manager.seuil;
     currentWorld.money = currentWorld.money - prix;
     $("#argent").html(currentWorld.money + ' $');
     manager.unlocked = true;
     currentWorld.products.product[id].managerUnlocked = true;
-    let toast;
+    var toast;
     ListerManager();
     toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"}; 
     toastr.success("Manager Hired ! ");
@@ -236,7 +243,6 @@ function formatNumber(number) {
     else if (number < 1000000) 
         number = number.toFixed(0);
     else if (number >= 1000000) { 
-        console.log(parseInt(number, 10));
          number = number.toPrecision(4);
          number = number.replace(/e\+(.*)/, " x 10 <sup>$1</sup>");
     } 
