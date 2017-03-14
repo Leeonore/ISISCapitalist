@@ -2,26 +2,25 @@
     border: 1px solid red;
 }*/
 
-.template {
-    display: none;
+#fenetre{
+    text-align: center;
+    vertical-align: middle;
 }
 
 #TeteMonde {
-    margin-left: auto;
-    margin-right: auto;
     line-height: 5em;
     font-size : 200%;
     font-weight: bold; 
     font-style : oblique;
+    margin-bottom: 2%;
 }
 
 img {
     width : 100%;
-    z-index: 1;
 }
 
 #imageMonde{
-    width : 15%;
+    width : 30%;
 }
 
 .product {
@@ -36,7 +35,6 @@ img {
 }
 
 .quantite {
-    text-align: center;
     width: 80%;
     z-index: 10;
     border-radius: 10px;
@@ -50,18 +48,9 @@ img {
     margin: auto;
     background: #C0C0C0;
     width: 100%;
-    text-align: center;
 }
 
-.revenu svg{
-    
-}
-
-.revenuText{
-    
-}
-
-.achat, .vitesse { 
+.achat, .time { 
     margin-top: 5px;
     width: 48%;
     border: 1px solid black;    
@@ -89,14 +78,17 @@ img {
     
 }
 
-.vitesse  {
-    float : right;    
+.time  {
+    float : right;   
+    background: white;
+    font-size: 10px;
+    padding: 0px;
 }
 
-#commutateur { 
-    border: 1px solid black;    
-    text-align: right;
-    width: 15%
+#commutateurButton{
+    width : 100px;
+    font-weight: bold;
+    font-size: 18px 
 }
 
 #logo{
@@ -107,6 +99,7 @@ img {
 #description {
     text-align: center;
 }
+
 
 #hireButton{
     float : left;

@@ -1,21 +1,18 @@
-/* global windows */
+//Définition des variables globales
+    var serveurUrl = "http://localhost:8080/ISISCapitalist/";
+    var currentWorld;
+    var lastupdate; //variable destiné à contenir la date de début de production
+    var commutateur = 1;
+    var bars = [];
 
-//Script pour récuperer infos
-var serveurUrl = "http://localhost:8080/ISISCapitalist/";
-var currentWorld;
-var items;
-var lastupdate;
-var bar;
-var vitesse;
-var commutateur = 1;
-var bars = [];
+//Initialisation interface
 $(document).ready(function () {
     $.getJSON(serveurUrl + "webresources/generic", function (world) {
         
         // Initialisation de monde
         currentWorld = world;
         $("#nomMonde").html(currentWorld.name);
-        $("#nomMonde").prepend("<img id='imageMonde' src='" + currentWorld.logo + "' alt='test'/>");
+        $("#nomMonde").prepend("<img id='imageMonde' class='img-circle' src='" + currentWorld.logo + "' alt='test'/>");
         $("#argent").html(currentWorld.money + ' $');
         
         // Création des produits
@@ -34,14 +31,15 @@ $(document).ready(function () {
                             + '<div class="revenu" id="r'
                             + product.id
                             + '"><span class="revenuText">'+ product.revenu + '</span></div>'
-                            //'<button class="btn btn-default" onClick="BuyProduct('+product+')">Acheter</button>'
                             //+ '<div class="achatQuantite">x1</div><div class="cout">'+ product.cout + '</div>'
-                            + '<div class="achat"><div class="achatQuantite">x1</div><div class="cout">'+ product.cout + '</div></div>'
-                            + '<div class="vitesse">'+ product.vitesse + '</div>'
+                            + '<div class="achat">'
+                            +'<div class="achatQuantite">x1</div>'
+                            +'<div class="cout">'+ product.cout + '</div></div>'
+                            + '<div class="time"></div>'
                         + '</div>'
                     + '</div>';
             $("#produits").append(newProduct);
-            
+            //$(".time").countdown({until: 0, compact : true});
             // Calcul du commutateur au lancement
             commutateur = 1;
             CalcCommutateur();
@@ -50,8 +48,6 @@ $(document).ready(function () {
             bars[product.id] = new ProgressBar.Line("#r"+product.id, {strokeWidth: 10, color: '#00ff00'});
 
         });
-        
-        
         
         // Gestionnaire des évenements
             // Commencer une production
@@ -79,13 +75,13 @@ $(document).ready(function () {
         $.each(currentWorld.products.product, function (index, product) {
             if(product.timeleft === 0){}
             else {
-                product.timeleft = product.timeleft -(Date.now() - product.lastupdate);  
+                product.timeleft = product.timeleft -(Date.now() - product.lastupdate);
                 if (product.timeleft <=0){
                     product.timeleft = 0;
                     revenu = product.revenu * product.quantite;
-                    currentWorld.money = formatNumber(parseInt(currentWorld.money) + revenu);
+                    currentWorld.money = parseInt(currentWorld.money) + revenu;
                     bars[product.id].set(0);
-                    $("#argent").html(currentWorld.money + ' $');
+                    $("#argent").html(formatNumber(currentWorld.money) + ' $');
                 }
             }
             if (product.managerUnlocked === true){
@@ -97,14 +93,17 @@ $(document).ready(function () {
     }
     
     // Start production
-      function StartProduction(id){
+    function StartProduction(id){
             var product = currentWorld.products.product[id];
             product.timeleft = product.vitesse;
             product.lastupdate = Date.now();
             var quantite = currentWorld.products.product[id].quantite;
             if (quantite > 0){
                 bars[product.id].animate(1, {duration: product.vitesse});
+                 $("#p"+ product.id +" .time").countdown({until : + (product.timeleft/1000), compact: true});
             }
+           
+            
         }
     
     // Calcul cout
@@ -112,7 +111,7 @@ $(document).ready(function () {
         if(n === 0){
             return 0;
         }else{
-            return formatNumber(cout * ((1 - Math.pow(croissance,n))/(1-croissance)));
+            return cout * ((1 - Math.pow(croissance,n))/(1-croissance));
         }
         
     }
@@ -144,10 +143,11 @@ $(document).ready(function () {
            $.each(currentWorld.products.product, function (index, product) {             
                 let cout = calculCout(product.cout,product.croissance,n);
                 $("#p"+ product.id +" .achatQuantite").html("x"+ n);
-                $("#p"+ product.id +" .cout").html(cout);
+                $("#p"+ product.id +" .cout").html(formatNumber(cout));
                 product.currentCout = cout;
                 product.currentQuantite = n;
             });
+            $("#commutateurButton").html("Buy </br> x " + n);
         }
         else if (commutateur >= 4) {             
             commutateur = 0;
@@ -155,12 +155,12 @@ $(document).ready(function () {
                 let quantiteMax = calculQuantiteMax(product);
                 let cout = calculCout(product.cout,product.croissance,quantiteMax);
                 $("#p"+ product.id +" .achatQuantite").html("x"+ quantiteMax);
-                $("#p"+ product.id +" .cout").html(cout);
+                $("#p"+ product.id +" .cout").html(formatNumber(cout));
                 product.currentCout = cout;
                 product.currentQuantite = quantiteMax;                
             });
+            $("#commutateurButton").html("Buy </br> x Max");
         }
-        $("#commutateur").html("<img src='icones/commutateur" + commutateur + ".png' alt='test'/>");
     }
     
     //Acheter un produit
@@ -168,11 +168,11 @@ $(document).ready(function () {
         let cout = product.currentCout;
             let quantite = product.currentQuantite;
             if (currentWorld.money >= cout){
-                currentWorld.money = formatNumber(currentWorld.money - cout);
+                currentWorld.money = currentWorld.money - cout;
                 product.quantite = product.quantite + quantite;
-                product.cout = formatNumber(product.cout * Math.pow(product.croissance,quantite));
+                product.cout = product.cout * Math.pow(product.croissance,quantite);
                 CalcCommutateur();
-                $("#argent").html(currentWorld.money + ' $');
+                $("#argent").html(formatNumber(currentWorld.money) + ' $');
                 $("#p"+ product.id + " .quantite").html(product.quantite);
             }
     }
@@ -211,6 +211,7 @@ function ListerManager(){
                     + ')" type="submit">Hire</button>'
                             + '</div>';
                 }
+                
             }
         });
         $(".modal-body").html(newManager);
@@ -241,4 +242,6 @@ function formatNumber(number) {
     } 
     return number; 
 }
+
+
 
