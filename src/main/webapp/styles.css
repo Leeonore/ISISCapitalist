@@ -79,8 +79,7 @@ img {
 .time  {
     float : right;   
     background: white;
-    font-size: 10px;
-    padding: 0px;
+    font-size: 11px;
 }
 
 #commutateurButton{
@@ -101,4 +100,10 @@ img {
 
 #hireButton{
     float : left;
+}
+
+
+#menu .buttonleft{
+    margin : 10%;
+    width : 100%;
 }
