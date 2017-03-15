@@ -25,7 +25,7 @@
             <palliers>
                 <pallier>
                     <name>Poule mouillée</name>
-                    <logo>icones/bonus.png</logo>
+                    <logo>icones/poule.jpg</logo>
                     <seuil>25</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
@@ -34,7 +34,7 @@
                 </pallier>
                 <pallier>
                     <name>Mère Poule</name>
-                    <logo>icones/bonus.png</logo>
+                    <logo>icones/poule.jpg</logo>
                     <seuil>50</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
@@ -43,7 +43,7 @@
                 </pallier>
                 <pallier>
                     <name>Chair de poule</name>
-                    <logo>icones/bonus.png</logo>
+                    <logo>icones/poule.jpg</logo>
                     <seuil>100</seuil>
                     <idcible>1</idcible>
                     <ratio>2</ratio>
@@ -56,9 +56,9 @@
             <id>2</id>
             <name>Canard</name>
             <logo>icones/canard.jpg</logo>
-            <cout>10</cout>
+            <cout>60</cout>
             <croissance>1.07</croissance>
-            <revenu>10</revenu>
+            <revenu>60</revenu>
             <vitesse>5000</vitesse>
             <quantite>0</quantite>
             <timeleft>0</timeleft>
@@ -66,7 +66,7 @@
             <palliers>
                 <pallier>
                     <name>Canard WC</name>
-                    <logo>icones/bonus.png</logo>
+                    <logo>icones/canard.jpg</logo>
                     <seuil>25</seuil>
                     <idcible>2</idcible>
                     <ratio>2</ratio>
@@ -75,7 +75,7 @@
                 </pallier>
                 <pallier>
                     <name>Canard boiteux</name>
-                    <logo>icones/bonus.png</logo>
+                    <logo>icones/canard.jpg</logo>
                     <seuil>50</seuil>
                     <idcible>2</idcible>
                     <ratio>2</ratio>
@@ -84,9 +84,173 @@
                 </pallier>
                 <pallier>
                     <name>Froid de canard</name>
-                    <logo>icones/bonus.png</logo>
+                    <logo>icones/canard.jpg</logo>
                     <seuil>100</seuil>
                     <idcible>2</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+            </palliers>
+        </product>
+        <product>
+            <id>3</id>
+            <name>Cochon</name>
+            <logo>icones/cochon.jpg</logo>
+            <cout>720</cout>
+            <croissance>1.07</croissance>
+            <revenu>720</revenu>
+            <vitesse>50000</vitesse>
+            <quantite>0</quantite>
+            <timeleft>0</timeleft>
+            <managerUnlocked>false</managerUnlocked>
+            <palliers>
+                <pallier>
+                    <name>Caractère de cochon</name>
+                    <logo>icones/cochon.jpg</logo>
+                    <seuil>25</seuil>
+                    <idcible>3</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>Lard ou cochon</name>
+                    <logo>icones/cochon.jpg</logo>
+                    <seuil>50</seuil>
+                    <idcible>3</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>Copain comme cochon</name>
+                    <logo>icones/cochon.jpg</logo>
+                    <seuil>100</seuil>
+                    <idcible>3</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+            </palliers>
+        </product>
+        <product>
+            <id>4</id>
+            <name>Vache</name>
+            <logo>icones/vache.jpg</logo>
+            <cout>8640</cout>
+            <croissance>1.07</croissance>
+            <revenu>8640</revenu>
+            <vitesse>500000</vitesse>
+            <quantite>0</quantite>
+            <timeleft>0</timeleft>
+            <managerUnlocked>false</managerUnlocked>
+            <palliers>
+                <pallier>
+                    <name>Vache folle</name>
+                    <logo>icones/vache.jpg</logo>
+                    <seuil>25</seuil>
+                    <idcible>4</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>Peau de vache</name>
+                    <logo>icones/vache.jpg</logo>
+                    <seuil>50</seuil>
+                    <idcible>4</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>La vache !</name>
+                    <logo>icones/vache.jpg</logo>
+                    <seuil>100</seuil>
+                    <idcible>4</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+            </palliers>
+        </product>
+        <product>
+            <id>5</id>
+            <name>Poney</name>
+            <logo>icones/poney.png</logo>
+            <cout>103680</cout>
+            <croissance>1.07</croissance>
+            <revenu>103680</revenu>
+            <vitesse>500000</vitesse>
+            <quantite>0</quantite>
+            <timeleft>0</timeleft>
+            <managerUnlocked>false</managerUnlocked>
+            <palliers>
+                <pallier>
+                    <name>Ja-poney</name>
+                    <logo>icones/poney.png</logo>
+                    <seuil>25</seuil>
+                    <idcible>5</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>PoneyClub</name>
+                    <logo>icones/poney.png</logo>
+                    <seuil>50</seuil>
+                    <idcible>5</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>AquaPoney</name>
+                    <logo>icones/poney.png</logo>
+                    <seuil>100</seuil>
+                    <idcible>5</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+            </palliers>
+        </product>
+        <product>
+            <id>6</id>
+            <name>Produit6</name>
+            <logo>icones/poney.png</logo>
+            <cout>1244000</cout>
+            <croissance>1.07</croissance>
+            <revenu>124400</revenu>
+            <vitesse>50000000</vitesse>
+            <quantite>0</quantite>
+            <timeleft>0</timeleft>
+            <managerUnlocked>false</managerUnlocked>
+            <palliers>
+                <pallier>
+                    <name>P6.Bonus1</name>
+                    <logo>icones/vache.jpg</logo>
+                    <seuil>25</seuil>
+                    <idcible>4</idcible>
+                    <ratio>6</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>P6.Bonus1</name>
+                    <logo>icones/vache.jpg</logo>
+                    <seuil>50</seuil>
+                    <idcible>6</idcible>
+                    <ratio>2</ratio>
+                    <typeratio>vitesse</typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>P6.Bonus1</name>
+                    <logo>icones/vache.jpg</logo>
+                    <seuil>100</seuil>
+                    <idcible>6</idcible>
                     <ratio>2</ratio>
                     <typeratio>vitesse</typeratio>
                     <unlocked>false</unlocked>
@@ -113,7 +277,7 @@
             <typeratio></typeratio>
             <unlocked></unlocked>
         </pallier>
-<!--        <pallier>
+        <!--        <pallier>
             <name></name>
             <logo></logo>
             <seuil></seuil>
@@ -291,5 +455,4 @@
             <unlocked>false</unlocked>
         </pallier>
     </managers>
-
 </world>

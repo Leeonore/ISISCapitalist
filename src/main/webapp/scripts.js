@@ -17,10 +17,10 @@ $(document).ready(function () {
         // Création des produits
         $.each(world.products.product, function (index, product) {
             var newProduct =  
-                    '<div class="row" id="p' + product.id + '">' 
+                    '<div class="ProduitPresentation" id="p' + product.id + '">' 
                         + '<div class="product">'
                             + '<div class="logoProduit">'
-                            + "<img src='" + product.logo + "' alt='test'/>" 
+                                + "<img src='" + product.logo + "' alt='test'/>" 
                             + '</div>'
                             + '<div class="quantite">'+ product.quantite + '</div>'
                         + '</div>'
@@ -30,12 +30,16 @@ $(document).ready(function () {
                             +'</div>'
                             + '<div class="achat">'
                                 +'<div class="achatQuantite"><button class="btn btn-default" disabled onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button></div>'
-                            +'<div class="cout">'+ product.cout + '</div>'
+                                +'<div class="cout">'+ product.cout + '</div>'
                             +'</div>'
                             + '<div class="time"></div>'
                         + '</div>'
-                    + '</div>';
-            $("#produits").append(newProduct);
+                    + '</div></br>';
+            if (product.id <=3){
+                $("#produits1").append(newProduct);
+            }else{
+                $("#produits2").append(newProduct);
+            }
           
             //Inialisation
                 // Calcul du commutateur au lancement
@@ -48,7 +52,7 @@ $(document).ready(function () {
 
             // Acheter un produit
             $("#p" + product.id + " .btn").click(function () {
-                var id = $(this).parents(".row").attr("id").substr(1) - 1;
+                var id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
                 var product = currentWorld.products.product[id];
                 BuyProduct(product);
             });
@@ -56,7 +60,7 @@ $(document).ready(function () {
 
         // Gestion clique logo
         $(".logoProduit").click(function () {
-            id = $(this).parents(".row").attr("id").substr(1) - 1;
+            id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
             StartProduction(id);
         });
     });
@@ -85,14 +89,7 @@ $(document).ready(function () {
         ListerUnlock();
     });
     
-    setInterval(function () {
-        $.each(currentWorld.products.product, function (index, product) {
-            //Démarrer la production d'un manager
-            if (product.managerUnlocked === true) {
-                StartProduction(product.id - 1);
-            }
-        });
-    }, 2000);
+
 });
 
 //Calculer le score (argent ...)
@@ -133,6 +130,7 @@ function StartProduction(id){
             
             //Lancer la bar d'avancement
             bars[product.id].animate(1, {duration: product.vitesse});
+            CalcCommutateur();
         
             //Quand la production est finie
             function liftOff() {
@@ -143,7 +141,12 @@ function StartProduction(id){
                 //Afficher badge si un manager est dispo mais pas engagé
                 InitBadge();
                 product.timeleft =-1; //Mettre la fin de production en attente
-                calcScore();
+                calcScore(); //Calculer le nouveau score
+                CalcCommutateur(); //Mettre à jour les couts
+                //Lancer la production si manager activé
+                if (product.managerUnlocked === true) {
+                StartProduction(product.id - 1);
+            }
             }
         }        
     }
@@ -297,6 +300,7 @@ function Hire(id) {
     //Mettre à jour les managers
     currentWorld.products.product[id].managerUnlocked = true; //dans le document
     ListerManager();  //dans l'affichage
+    StartProduction(id); //Lancer la production du produit
 
     //Info bulle
     toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
