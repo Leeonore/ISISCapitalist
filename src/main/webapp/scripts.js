@@ -19,7 +19,7 @@ $(document).ready(function () {
             var newProduct =  
                     '<div class="row" id="p' + product.id + '">' 
                         + '<div class="product">'
-                            + '<div class="logo">'
+                            + '<div class="logoProduit">'
                             + "<img src='" + product.logo + "' alt='test'/>" 
                             + '</div>'
                             + '<div class="quantite">'+ product.quantite + '</div>'
@@ -55,7 +55,7 @@ $(document).ready(function () {
         });
 
         // Gestion clique logo
-        $(".logo").click(function () {
+        $(".logoProduit").click(function () {
             id = $(this).parents(".row").attr("id").substr(1) - 1;
             StartProduction(id);
         });
@@ -63,7 +63,11 @@ $(document).ready(function () {
     
     //Gestion clique du commutateur
     $("#commutateur").click(function () {
+        if (commutateur === 3){
+            commutateur = 0;
+        }else{
         commutateur += 1;
+        }
         CalcCommutateur();
     });
     
@@ -73,7 +77,13 @@ $(document).ready(function () {
         //Initialisation des managers
         ListerManager();
     });
-    //Afficher badge si un manager est dispo mais pas engagé
+    
+    //Ouvrir la fenêtre des unlock
+    $("#unlocksbutton").click(function () {
+        $("#unlocks").modal('show');
+        //Initialisation des managers
+        ListerUnlock();
+    });
     
     setInterval(function () {
         $.each(currentWorld.products.product, function (index, product) {
@@ -84,6 +94,31 @@ $(document).ready(function () {
         });
     }, 2000);
 });
+
+//Calculer le score (argent ...)
+function calcScore() {
+    $.each(currentWorld.products.product, function (index, product) {
+        //Si la production n'est pas en cours
+        if(product.timeleft === 0){}
+        //Si la production est en cours
+        else {
+            product.timeleft = product.timeleft -(Date.now() - product.lastupdate); //Mettre à jour le temps restant
+            //Si la produciton est finie
+            if (product.timeleft <=0){
+                //Reinitialiser
+                product.timeleft = 0; 
+
+                //Mettre à jour l'argent disponible
+                currentWorld.money = parseInt(currentWorld.money) + (product.revenu*product.quantite); //dans le document
+                $("#argent").html(formatNumber(currentWorld.money) + ' $'); //à l'affichage
+            }
+        }
+        
+
+        //Gestion cliquabilité des boutons
+        GestionBuyButton(product); 
+    });  
+}
 
 // Start production d'un produit
 function StartProduction(id){
@@ -138,28 +173,9 @@ function calculQuantiteMax(product){
     
 // Calculer prix/commutateur
 function CalcCommutateur(){
-    var n;
-    //Si on veut 1, 10 ou 100 produits
-    if (commutateur < 4){            
-       n = Math.pow(10,(commutateur-1)); //Transformation du commutateur (1,2,3) en quantité (1,10,100)
-       $("#commutateurButton").html("Buy </br> x " + n); // Mise à jour de l'affichage du commutateur
-       $.each(currentWorld.products.product, function (index, product) {
-            //Calcul du cout correspondant
-            var cout = calculCout(product.cout,product.croissance,n);
-            //Mise à jour de l'affichage
-            $("#p"+ product.id +" .btn").html("Buy x"+ n);
-            $("#p"+ product.id +" .cout").html(formatNumber(cout));
-            //Enregistrement des données courantes
-            product.currentCout = cout;
-            product.currentQuantite = n;
-            //Mise à jour de la cliquabilité des boutons
-            GestionBuyButton(product);              
-        });
-    }
     //Si on veut "max"
-    else if (commutateur >= 4) {
+    if (commutateur === 0) {
         $("#commutateurButton").html("Buy </br> x Max"); // Mise à jour de l'affichage du commutateur
-        commutateur = 0;
         $.each(currentWorld.products.product, function (index, product) {
             //Calcul de la quantité max et du cout correspondant
             var quantiteMax = calculQuantiteMax(product);
@@ -172,6 +188,21 @@ function CalcCommutateur(){
             product.currentQuantite = quantiteMax;
             //Mise à jour de la cliquabilité des boutons
             GestionBuyButton(product);
+        });
+    }else{     //Si on veut 1, 10 ou 100 produits
+       var n = Math.pow(10,(commutateur-1)); //Transformation du commutateur (1,2,3) en quantité (1,10,100)
+       $("#commutateurButton").html("Buy </br> x " + n); // Mise à jour de l'affichage du commutateur
+       $.each(currentWorld.products.product, function (index, product) {
+            //Calcul du cout correspondant
+            var cout = calculCout(product.cout,product.croissance,n);
+            //Mise à jour de l'affichage
+            $("#p"+ product.id +" .btn").html("Buy x"+ n);
+            $("#p"+ product.id +" .cout").html(formatNumber(cout));
+            //Enregistrement des données courantes
+            product.currentCout = cout;
+            product.currentQuantite = n;
+            //Mise à jour de la cliquabilité des boutons
+            GestionBuyButton(product);              
         });
     }
 }
@@ -194,23 +225,46 @@ function BuyProduct(product) {
 
 //Gestion du bouton d'achat cliquable ou non
 function GestionBuyButton(product){
-    if (product.currentCout > currentWorld.money ) { //Si il n'a pas le budget
+    if ((product.currentCout > currentWorld.money) || (product.currentCout ===0)) { //Si il n'a pas le budget
         $("#p" + product.id + " .btn").attr("disabled", "disabled");
-    }else{ //Si il a le budget
-       $("#p" + product.id + " .btn").removeAttr("disabled");
+    }else{ //Si il a le budget, ou cout=0 (utile si quantité max=0)
+        $("#p" + product.id + " .btn").removeAttr("disabled");
    }    
 }
 
-//Initialisation de la liste des managers)
+//Formater les nombres (virgules, puissances etc)
+function formatNumber(number) { 
+    if (number < 1000) 
+        number = number.toFixed(2); 
+    else if (number < 1000000) 
+        number = number.toFixed(0);
+    else if (number >= 1000000) { 
+         number = number.toPrecision(4);
+         number = number.replace(/e\+(.*)/, " x 10 <sup>$1</sup>");
+    } 
+    return number; 
+}
+
+//Afficher "new" lorsqu'un nouveau manager est disponible
+function InitBadge() {
+    $.each(currentWorld.managers.pallier, function (index ,pallier) {
+        //Si il a l'argent nécessaire mais que le manager n'est pas engagé
+        if ((pallier.seuil <= currentWorld.money) && (currentWorld.products.product[pallier.idcible - 1].managerUnlocked === false)) {
+            $("#managersbutton .badge").text("New");
+        }
+    });
+}
+
+//Initialisation de la liste des managers
 function ListerManager() {
     var newManager;
-    $(".modal-body").html("");
+    $("#managers .modal-body").html("");
     $.each(currentWorld.managers.pallier, function (index, pallier) {
         var id = pallier.idcible - 1;
         if (currentWorld.products.product[id].managerUnlocked === false) { //si le manager n'est pas en service
             //Affichage des managers
             newManager = '<div class="row" id="m' + id + '">'
-                            + "<img class='logoManager' src='" + pallier.logo + "'/>"
+                            + "<img class='logo' src='" + pallier.logo + "'/>"
                             + '<div class="description">'
                                 + '<div class="name">' + pallier.name + '</div>'
                                 + '<div class="objectif"> Lancer la production de ' + currentWorld.products.product[id].name + '</div>'
@@ -218,7 +272,7 @@ function ListerManager() {
                             + '</div>'
                             + '<button class="btn btn-default" disabled onclick="Hire(' + id + ')" type="submit">Hire</button>'
                         + '</div>';
-            $(".modal-body").append(newManager);
+            $("#managers .modal-body").append(newManager);
             
             //Gestion du bouton "hire" cliquable ou non
             if (pallier.seuil <= currentWorld.money) {
@@ -229,7 +283,6 @@ function ListerManager() {
             }
         }
     });
-
 }
 
 //Engager un manager
@@ -250,50 +303,41 @@ function Hire(id) {
     toastr.success("Manager engagé ! ");
 }
 
-//Formater les nombres (virgules, puissances etc)
-function formatNumber(number) { 
-    if (number < 1000) 
-        number = number.toFixed(2); 
-    else if (number < 1000000) 
-        number = number.toFixed(0);
-    else if (number >= 1000000) { 
-         number = number.toPrecision(4);
-         number = number.replace(/e\+(.*)/, " x 10 <sup>$1</sup>");
-    } 
-    return number; 
-}
-
-function InitBadge() {
-    $.each(currentWorld.managers.pallier, function (index ,pallier) {
-    console.log(pallier.seuil <= currentWorld.money);
-        //Si il a l'argent nécessaire mais que le manager n'est pas engagé
-        if ((pallier.seuil <= currentWorld.money) && (currentWorld.products.product[pallier.idcible - 1].managerUnlocked === false)) {
-            $("#managersbutton .badge").text("New");
+//Initialisation de la liste des unlocks
+function ListerUnlock(){
+    var newUnlocks;
+    $(".modal-body #UnlockAll").html("");
+    $(".modal-body #UnlockProduct").html("");
+    $.each(currentWorld.allunlocks.pallier, function (index, unlock) {
+        var id = unlock.idcible - 1;
+        if (unlock.unlocked === false) { //si le unlock n'est pas en service
+            //Affichage des unlocks
+            cible = currentWorld.products.product[id];
+            newUnlocks = '<div class="row" id="u' + id + '">'
+                            + "<img class='logo' src='" + cible.logo + "'/>"
+                            + '<div class="description">'
+                                + '<div class="name">' + unlock.name + '</div>'
+                                + '<div class="seuil">' + unlock.seuil + '</div>'
+                                + '<div class="objectif">' + cible.name +" "+ cible.palliers.pallier[id].typeratio + " x"+ cible.palliers.pallier[id].ratio +  '</div>'
+                            + '</div>'
+                        + '</div>';
+            $(".modal-body #UnlockAll").append(newUnlocks);
         }
     });
-}
-
-//Calculer le score (argent ...)
-function calcScore() {
-    $.each(currentWorld.products.product, function (index, product) {
-        //Si la production n'est pas en cours
-        if(product.timeleft === 0){}
-        //Si la production est en cours
-        else {
-            product.timeleft = product.timeleft -(Date.now() - product.lastupdate); //Mettre à jour le temps restant
-            //Si la produciton est finie
-            if (product.timeleft <=0){
-                //Reinitialiser
-                product.timeleft = 0; 
-
-                //Mettre à jour l'argent disponible
-                currentWorld.money = parseInt(currentWorld.money) + (product.revenu*product.quantite); //dans le document
-                $("#argent").html(formatNumber(currentWorld.money) + ' $'); //à l'affichage
-            }
+        $.each(currentWorld.products.product, function (index, product) {
+            $.each(product.palliers.pallier, function (index, pallier){
+        if (pallier.unlocked === false) { //si le unlock n'est pas en service
+            //Affichage des unlocks du produit
+            newUnlocks = '<div class="row" id="u' + product.id + '">'
+                            + "<img class='logo' src='" + product.logo + "'/>"
+                            + '<div class="description">'
+                                + '<div class="name">' + pallier.name + '</div>'
+                                + '<div class="seuil">' + pallier.seuil + '</div>'
+                                + '<div class="objectif">' + product.name +" "+ pallier.typeratio + " x"+ pallier.ratio +  '</div>'
+                            + '</div>'
+                        + '</div>';
+            $(".modal-body #UnlockProduct").append(newUnlocks);
         }
-        
-
-        //Gestion cliquabilité des boutons
-        GestionBuyButton(product); 
-    });  
+            });
+    });
 }

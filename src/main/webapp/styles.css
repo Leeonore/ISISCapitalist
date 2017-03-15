@@ -105,22 +105,23 @@ textArea {
         }    
 
 
-/* Fenetre manageur */
-
+/* Fenetre modal */
+#unlocks .modal-content{
+    width: 120%;
+}
 .modal-body {
     height: 70%;
     width: 100%;
     text-align: center;
     overflow: auto;
 }
-
-.logoManager {
+.logo {
     float:left;
     width : 30%;
 }
 
 .modal-body .description, .modal-body .btn{
-    margin-top: 10%;
+    margin-top: 6%;
 }
 
 .modal-body .description {
@@ -131,4 +132,8 @@ textArea {
     font-size: 27px;
     color : burlywood;
     font-family: cursive;
+}
+
+#unlocks{
+    witdh : 100%;
 }
