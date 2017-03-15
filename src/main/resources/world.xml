@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation='src/main/resources/jaxb/Capitalist/schemaMonde.xsd'>
     <name>Farmland</name>
     <logo>icones/farmland.jpg</logo>
-    <money>1000</money>
+    <money>999</money>
     <score>0</score>
     <totalangels>0</totalangels>
     <activeangels>0</activeangels>
@@ -18,7 +18,7 @@
             <cout>1</cout>
             <croissance>1.07</croissance>
             <revenu>1</revenu>
-            <vitesse>500</vitesse>
+            <vitesse>1000</vitesse>
             <quantite>0</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
