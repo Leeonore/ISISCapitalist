@@ -6,7 +6,10 @@
 package isiscapitalist;
 
 import com.google.gson.Gson;
+import generated.PallierType;
+import generated.ProductType;
 import generated.World;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -43,7 +46,8 @@ public class GenericResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public World getXml() throws JAXBException {
+    public World getXml(@Context HttpServletRequest request) throws JAXBException {
+        String username = request.getHeader("X-user");
         World world = service.readWorldFromXml();
         return(world);
     }
@@ -59,8 +63,24 @@ public class GenericResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJson() throws JAXBException {
+    public String getJson(@Context HttpServletRequest request) throws JAXBException {
+        String username = request.getHeader("X-user");
         World world = service.readWorldFromXml();
         return(new Gson().toJson(world));
+        
     }
-}
+    
+    @PUT
+    @Path("/product")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void product(String content) {
+        ProductType product = new Gson().fromJson(content, ProductType.class);
+    }
+    
+    @PUT
+    @Path("/manager")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void pallier(String content){
+        PallierType pallier = new Gson().fromJson(content, PallierType.class);
+    }
+}   
