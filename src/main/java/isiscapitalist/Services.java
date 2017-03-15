@@ -5,6 +5,7 @@ import generated.ProductType;
 import generated.World;
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashSet;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -16,6 +17,7 @@ public class Services {
     private JAXBContext cont;
     private Unmarshaller u;
     private Marshaller m;
+    private final HashSet<String> hset = new HashSet<>();
 
     /**
      * Déserialisation du XML
@@ -23,11 +25,20 @@ public class Services {
      * @return objet World
      * @throws JAXBException
      */
-    public World readWorldFromXml() throws JAXBException {
+    
+    
+    
+    public World readWorldFromXml(String username) throws JAXBException {
+        String pseudo = "world.xml";
+        if ( hset.contains(username)) {
+            pseudo = username + "-" + pseudo;
+        } 
+        else { hset.add(username);
+        }
         try {
             cont = JAXBContext.newInstance(World.class);
             u = cont.createUnmarshaller();
-            InputStream input = getClass().getClassLoader().getResourceAsStream("world.xml");
+            InputStream input = getClass().getClassLoader().getResourceAsStream(pseudo);
             world = (World) u.unmarshal(input);
         } catch (JAXBException e) {
             System.err.println(e.getMessage());
@@ -43,10 +54,10 @@ public class Services {
      * @param world
      * @throws JAXBException
      */
-    public void saveWorldToXML(World world) throws JAXBException {
+    public void saveWorldToXML(World world, String username) throws JAXBException {
         try {
             m = cont.createMarshaller();
-            m.marshal(world, new File("world.xml"));
+            m.marshal(world, new File(username + "-" + "world.xml"));
         } catch (JAXBException e) {
             System.err.println(e.getMessage());
         } catch (NullPointerException e) {
@@ -132,3 +143,4 @@ ProductType product = findProductById(world, manager.getIdcible());
         return true;
 
     }
+}

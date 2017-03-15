@@ -48,7 +48,7 @@ public class GenericResource {
     @Produces(MediaType.APPLICATION_XML)
     public World getXml(@Context HttpServletRequest request) throws JAXBException {
         String username = request.getHeader("X-user");
-        World world = service.readWorldFromXml();
+        World world = service.readWorldFromXml(username);
         return(world);
     }
 
@@ -65,7 +65,7 @@ public class GenericResource {
     @Produces(MediaType.APPLICATION_JSON)
     public String getJson(@Context HttpServletRequest request) throws JAXBException {
         String username = request.getHeader("X-user");
-        World world = service.readWorldFromXml();
+        World world = service.readWorldFromXml(username);
         return(new Gson().toJson(world));
         
     }
