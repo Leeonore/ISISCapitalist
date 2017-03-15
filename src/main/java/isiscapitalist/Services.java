@@ -143,4 +143,8 @@ ProductType product = findProductById(world, manager.getIdcible());
         return true;
 
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> b32aeb832a70682c73ae9fab58d93cc76d1b4017
