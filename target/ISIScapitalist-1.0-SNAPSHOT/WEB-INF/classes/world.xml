@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation='src/main/resources/jaxb/Capitalist/schemaMonde.xsd'>
     <name>Farmland</name>
     <logo>icones/farmland.jpg</logo>
-    <money>999</money>
+    <money>1</money>
     <score>0</score>
     <totalangels>0</totalangels>
     <activeangels>0</activeangels>
@@ -246,7 +246,7 @@
     </angelupgrades>
     <managers>
                 <pallier>
-                    <name>Manager1</name>
+                    <name>Nicolas Rake</name>
                     <logo>icones/Nicolas.jpg</logo>
                     <seuil>1000</seuil>
                     <idcible>1</idcible>
@@ -255,9 +255,36 @@
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
-                    <name>Manager2</name>
+                    <name>Eshane Hipster</name>
                     <logo>icones/Eshane.jpg</logo>
                     <seuil>15000</seuil>
+                    <idcible>2</idcible>
+                    <ratio></ratio>
+                    <typeratio></typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+<!--                <pallier>
+                    <name></name>
+                    <logo>icones/Eshane.jpg</logo>
+                    <seuil>15000</seuil>
+                    <idcible>2</idcible>
+                    <ratio></ratio>
+                    <typeratio></typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>-->
+                <pallier>
+                    <name>Killian Salt</name>
+                    <logo>icones/Killian.jpg</logo>
+                    <seuil>500000</seuil>
+                    <idcible>2</idcible>
+                    <ratio></ratio>
+                    <typeratio></typeratio>
+                    <unlocked>false</unlocked>
+                </pallier>
+                <pallier>
+                    <name>Remy Profits</name>
+                    <logo>icones/Remy.jpg</logo>
+                    <seuil>1200000</seuil>
                     <idcible>2</idcible>
                     <ratio></ratio>
                     <typeratio></typeratio>

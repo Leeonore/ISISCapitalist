@@ -210,7 +210,7 @@ function ListerManager() {
         if (currentWorld.products.product[id].managerUnlocked === false) { //si le manager n'est pas en service
             //Affichage des managers
             newManager = '<div class="row" id="m' + id + '">'
-                            + "<img id='logo' src='" + pallier.logo + "'/>"
+                            + "<img class='logoManager' src='" + pallier.logo + "'/>"
                             + '<div class="description">'
                                 + '<div class="name">' + pallier.name + '</div>'
                                 + '<div class="objectif"> Lancer la production de ' + currentWorld.products.product[id].name + '</div>'

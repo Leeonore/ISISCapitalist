@@ -6,3 +6,5 @@ isiscapitalist\ApplicationConfig.class
 generated\ObjectFactory.class
 generated\ProductType.class
 generated\TyperatioType.class
+isiscapitalist\GenericResource.class
+isiscapitalist\Services.class
