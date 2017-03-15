@@ -31,9 +31,10 @@ $(document).ready(function () {
                             + '<div class="revenu" id="r' + product.id + '">'
                                 +'<span class="revenuText">'+ product.revenu + '</span>'
                             +'</div>'
-                            + '<div class="achat' + product.id + '">'
-                                +'<button id="buyButton" class="btn btn-default" onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button>'
-                                +'<div class="cout">'+ product.cout + '</div>'
+                            + '<div class="achat">'
+                                +'<div class="achatQuantite"><button class="btn btn-default" disabled onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button></div>'
+                            //+'<div class="buyButton">Buy x1</div>'
+                            +'<div class="cout">'+ product.cout + '</div>'
                             +'</div>'
                             + '<div class="time"></div>'
                         + '</div>'
@@ -47,6 +48,12 @@ $(document).ready(function () {
             // Initialisation de la bar
             bars[product.id] = new ProgressBar.Line("#r"+product.id, {strokeWidth: 10, color: '#00ff00'});
 
+            // Acheter un produit
+            $("#p" + product.id + " .btn").click(function (event) {
+                var id = $(this).parents(".row").attr("id").substr(1) - 1;
+                var product = currentWorld.products.product[id];
+                BuyProduct(product);            
+            });
         });
         
         // Gestionnaire des évenements
@@ -56,13 +63,6 @@ $(document).ready(function () {
             StartProduction(id);
         });
 
-            // Acheter un produit
-            $(".achat").click(function (event) {
-                var id = $(this).parents(".row").attr("id").substr(1) - 1;
-                var product = currentWorld.products.product[id];
-                BuyProduct(product);            
-            });
-
             // Calcul score prediodiquement
             setInterval(function() { 
                 calcScore();
@@ -70,7 +70,7 @@ $(document).ready(function () {
     });
     
     
-    //Calculer le score
+    //Calculer le score (argent ...)
     function calcScore() {
         $.each(currentWorld.products.product, function (index, product) {
             if(product.timeleft === 0){}
@@ -87,13 +87,12 @@ $(document).ready(function () {
             if (product.managerUnlocked === true){
                 StartProduction(product.id -1);
             }
-            //condition à faire
             $("#managersbutton .badge").text("New");
             GestionBuyButton(product);
         });            
     }
     
-    // Start production
+    // Start production d'un produit
     function StartProduction(id){
             var product = currentWorld.products.product[id];
             product.timeleft = product.vitesse;
@@ -103,11 +102,9 @@ $(document).ready(function () {
                 bars[product.id].animate(1, {duration: product.vitesse});
                  $("#p"+ product.id +" .time").countdown({until : + (product.timeleft/1000), compact: true});
             }
-           
-            
         }
     
-    // Calcul cout
+    // Calcul cout des produits
     function calculCout(cout, croissance, n){
         if(n === 0){
             return 0;
@@ -143,11 +140,11 @@ $(document).ready(function () {
            n = Math.pow(10,(commutateur-1));
            $.each(currentWorld.products.product, function (index, product) {             
                 var cout = calculCout(product.cout,product.croissance,n);
-                $("#p"+ product.id +" #buyButton").html("Buy x"+ n);
+                $("#p"+ product.id +" .btn").html("Buy x"+ n);
                 $("#p"+ product.id +" .cout").html(formatNumber(cout));
                 product.currentCout = cout;
                 product.currentQuantite = n;
-                
+                GestionBuyButton(product);              
             });
             $("#commutateurButton").html("Buy </br> x " + n);
         }
@@ -156,10 +153,11 @@ $(document).ready(function () {
             $.each(currentWorld.products.product, function (index, product) {
                 var quantiteMax = calculQuantiteMax(product);
                 var cout = calculCout(product.cout,product.croissance,quantiteMax);
-                $("#p"+ product.id +" #buyButton").html("Buy x"+ quantiteMax);
-                $("#p"+ product.id +" .cout").html(formatNumber(cout));
+                $("#p"+ product.id + " .btn").html("Buy x"+ quantiteMax);
+                $("#p"+ product.id + " .cout").html(formatNumber(cout));
                 product.currentCout = cout;
-                product.currentQuantite = quantiteMax;                
+                product.currentQuantite = quantiteMax;
+                GestionBuyButton(product);
             });
             $("#commutateurButton").html("Buy </br> x Max");
         }
@@ -177,56 +175,62 @@ $(document).ready(function () {
                 $("#argent").html(formatNumber(currentWorld.money) + ' $');
                 $("#p"+ product.id + " .quantite").html(product.quantite);
             }
+            CalcCommutateur();
+            GestionBuyButton(product);
     }
 
+    //Ouvrir la fenêtre des managers
     $("#managersbutton").click(function () {
         $("#managers").modal('show');
         //Création des managers
         ListerManager();
 
     });
-    
-    function GestionBuyButton(product){
-        if (product.currentCout > currentWorld.money){
-                $("'.achat" + product.id ).html('<button id="buyButton" class="btn btn-default" disabled onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button>');
-            }else{
-                $("'.achat" + product.id ).html('<button id="buyButton" class="btn btn-default" disabled onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button>');
-            }
-        }
 });
 
+
+//Gestion disabled du bouton d'achat
+function GestionBuyButton(product){
+    if (product.currentCout > currentWorld.money ) {
+        $("#p" + product.id + " .btn").attr("disabled", "disabled");
+    }else{
+       $("#p" + product.id + " .btn").removeAttr("disabled");
+   }    
+}
+
+//Initialisation de la liste des managers)
 function ListerManager(){
     var newManager = '';
+    $(".modal-body").html("");
         $.each(currentWorld.managers.pallier, function (index, pallier) {
             var id = pallier.idcible - 1;
+            var pallier = pallier;
             if (pallier.unlocked === false) {
-            newManager = newManager 
-                        + '<div class="row" id="m'
-                        + id
-                        + '">' 
+            newManager =  '<div class="row" id="m'+ id+ '">' 
                             + "<img id='logo' src='" + pallier.logo + "'/>" 
                             + '<div class="description">'
                                 + '<div class="name">' + pallier.name + '</div>'
                                 + '<div class="objectif"> Lancer la production de ' + currentWorld.products.product[id].name + '</div>'
                                 + '<div class="seuil">' + pallier.seuil + '</div>'
-                            + '</div>';
-                if (pallier.seuil > currentWorld.money) {
-                    newManager = newManager 
-                    +'<button id="hireButton" class="btn btn-default" type="submit" disabled="disabled" >Hire</button>'
-                            + '</div>';
-                } else {
-                    newManager = newManager 
-                    +'<button id="hireButton" class="btn btn-default" onclick="Hire('
-                    + id
-                    + ')" type="submit">Hire</button>'
-                            + '</div>';
-                }
+                            + '</div>'
+                            +'<button class="btn btn-default" disabled onclick="Hire('+ id+ ')" type="submit">Hire</button>'
+                        + '</div>';
                 
+            $(".modal-body").append(newManager);
+                if (pallier.seuil <= currentWorld.money) {
+                    console.log("test1");
+                    $("#m" + id + " .btn").removeAttr("disabled");
+                } else {
+                    console.log("test2");
+                    $("#m" + id + " .btn ").attr("disabled", "disabled");
+
+                } 
             }
         });
-        $(".modal-body").html(newManager);
+
 }
 
+//Engager un manager
 function Hire(id){
     var manager = currentWorld.managers.pallier[id];
     var prix = manager.seuil;
@@ -240,6 +244,7 @@ function Hire(id){
     toastr.success("Manager Hired ! ");
 }
 
+//Formater les nombres (virgules, puissances etc)
 function formatNumber(number) { 
     if (number < 1000) 
         number = number.toFixed(2); 
@@ -251,6 +256,3 @@ function formatNumber(number) {
     } 
     return number; 
 }
-
-
-
