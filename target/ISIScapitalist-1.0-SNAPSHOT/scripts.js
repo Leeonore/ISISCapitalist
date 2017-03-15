@@ -31,8 +31,8 @@ $(document).ready(function () {
                             + '<div class="revenu" id="r' + product.id + '">'
                                 +'<span class="revenuText">'+ product.revenu + '</span>'
                             +'</div>'
-                            + '<div class="achat">'
-                                +'<button id="buyButton" class="btn btn-default" disable="false" onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button>'
+                            + '<div class="achat' + product.id + '">'
+                                +'<button id="buyButton" class="btn btn-default" onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button>'
                                 +'<div class="cout">'+ product.cout + '</div>'
                             +'</div>'
                             + '<div class="time"></div>'
@@ -87,11 +87,9 @@ $(document).ready(function () {
             if (product.managerUnlocked === true){
                 StartProduction(product.id -1);
             }
-            if (product.currentCout < currentWorld.money){
-                document.getElementById("buyButton").disabled = true; //TODO : differencier button
-            }
             //condition à faire
             $("#managersbutton .badge").text("New");
+            GestionBuyButton(product);
         });            
     }
     
@@ -170,7 +168,7 @@ $(document).ready(function () {
     //Acheter un produit
     function BuyProduct(product){
         var cout = product.currentCout;
-            var quantite = product.currentQuantite;
+        var quantite = product.currentQuantite;
             if (currentWorld.money >= cout){
                 currentWorld.money = currentWorld.money - cout;
                 product.quantite = product.quantite + quantite;
@@ -187,6 +185,14 @@ $(document).ready(function () {
         ListerManager();
 
     });
+    
+    function GestionBuyButton(product){
+        if (product.currentCout > currentWorld.money){
+                $("'.achat" + product.id ).html('<button id="buyButton" class="btn btn-default" disabled onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button>');
+            }else{
+                $("'.achat" + product.id ).html('<button id="buyButton" class="btn btn-default" disabled onclick="BuyProduct(' + product + ')" type="submit">Buy x1</button>');
+            }
+        }
 });
 
 function ListerManager(){
@@ -220,9 +226,6 @@ function ListerManager(){
         });
         $(".modal-body").html(newManager);
 }
-document.getElementById("buyButton").addEventListener("click", function(){
-    document.getElementById("demo").innerHTML = "Hello World";
-});
 
 function Hire(id){
     var manager = currentWorld.managers.pallier[id];
