@@ -72,75 +72,75 @@ public class Services {
 
 // renvoie false si l’action n’a pas pu être traitée 
     
-    public Boolean updateProduct(String username, ProductType newproduct) {
-
-// aller chercher le monde qui correspond au joueur
-        World world = getWorld(username);
-
-// trouver dans ce monde, le produit équivalent à celui passé
-// en paramètre
-        ProductType product = findProductById(world, newproduct.getId());
-
-        if (product == null) {
-            return false;
-        }
-
-// calculer la variation de quantité. Si elle est positive c'est
-// que le joueur a acheté une certaine quantité de ce produit
-// sinon c’est qu’il s’agit d’un lancement de production.
-        int qtchange = newproduct.getQuantite() - product.getQuantite();
-
-        if (qtchange > 0) {
-
-// soustraire de l'argent du joueur le cout de la quantité
-// achetée et mettre à jour la quantité de product
-        } else {
-
-// initialiser product.timeleft à product.vitesse
-// pour lancer la production
-        }
-
-// sauvegarder les changements du monde
-        saveWordlToXml(username, world);
-
-        return true;
-    }
-
-// prend en paramètre le pseudo du joueur et le manager acheté.
-// renvoie false si l’action n’a pas pu être traitée
-    public Boolean updateManager(String username, PallierType newmanager) {
-
-// aller chercher le monde qui correspond au joueur
-        World world = getWorld(username);
-
-// trouver dans ce monde, le manager équivalent à celui passé
-// en paramètre
-        PallierType manager = findManagerByName(world, newmanager.getName());
-
-        if (manager == null) {
-
-            return false;
-
-        }
-        // débloquer ce manager
-
-
-// trouver le produit correspondant au manager
-
-ProductType product = findProductById(world, manager.getIdcible());
-
-        if (product == null) {
-
-            return false;
-
-        }
-
-// débloquer le manager de ce produit
-// soustraire de l'argent du joueur le cout du manager
-// sauvegarder les changements au monde
-        saveWordlToXml(username, world);
-
-        return true;
-
-    }
+//    public Boolean updateProduct(String username, ProductType newproduct) {
+//
+//// aller chercher le monde qui correspond au joueur
+//        World world = getWorld(username);
+//
+//// trouver dans ce monde, le produit équivalent à celui passé
+//// en paramètre
+//        ProductType product = findProductById(world, newproduct.getId());
+//
+//        if (product == null) {
+//            return false;
+//        }
+//
+//// calculer la variation de quantité. Si elle est positive c'est
+//// que le joueur a acheté une certaine quantité de ce produit
+//// sinon c’est qu’il s’agit d’un lancement de production.
+//        int qtchange = newproduct.getQuantite() - product.getQuantite();
+//
+//        if (qtchange > 0) {
+//
+//// soustraire de l'argent du joueur le cout de la quantité
+//// achetée et mettre à jour la quantité de product
+//        } else {
+//
+//// initialiser product.timeleft à product.vitesse
+//// pour lancer la production
+//        }
+//
+//// sauvegarder les changements du monde
+//        saveWordlToXml(username, world);
+//
+//        return true;
+//    }
+//
+//// prend en paramètre le pseudo du joueur et le manager acheté.
+//// renvoie false si l’action n’a pas pu être traitée
+//    public Boolean updateManager(String username, PallierType newmanager) {
+//
+//// aller chercher le monde qui correspond au joueur
+//        World world = getWorld(username);
+//
+//// trouver dans ce monde, le manager équivalent à celui passé
+//// en paramètre
+//        PallierType manager = findManagerByName(world, newmanager.getName());
+//
+//        if (manager == null) {
+//
+//            return false;
+//
+//        }
+//        // débloquer ce manager
+//
+//
+//// trouver le produit correspondant au manager
+//
+//ProductType product = findProductById(world, manager.getIdcible());
+//
+//        if (product == null) {
+//
+//            return false;
+//
+//        }
+//
+//// débloquer le manager de ce produit
+//// soustraire de l'argent du joueur le cout du manager
+//// sauvegarder les changements au monde
+//        saveWordlToXml(username, world);
+//
+//        return true;
+//
+//    }
 }
