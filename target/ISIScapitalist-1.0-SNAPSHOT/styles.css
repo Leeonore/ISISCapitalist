@@ -119,9 +119,7 @@ textArea {
 
 
 /* Fenetre modal */
-#unlocks .modal-content{
-    width: 120%;
-}
+
 .modal-body {
     height: 70%;
     width: 100%;
@@ -134,7 +132,11 @@ textArea {
 }
 
 .modal-body .description, .modal-body .btn{
-    margin-top: 6%;
+    margin-top: 9%;
+}
+
+.modal-body .row {
+    margin-top: 4%;
 }
 
 .modal-body .description {
@@ -147,6 +149,12 @@ textArea {
     font-family: cursive;
 }
 
-#unlocks{
-    width: 100%;
+#unlocks .description{
+    width: 64%;
+    margin: auto;
 }
+
+#unlocks .modal-content{
+    width: 150%;
+}
+

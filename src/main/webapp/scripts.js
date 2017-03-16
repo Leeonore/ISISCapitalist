@@ -48,7 +48,9 @@ $(document).ready(function () {
                 // Initialisation de la bar
                 bars[product.id] = new ProgressBar.Line("#r" + product.id, {strokeWidth: 10, color: '#00ff00'});
                 //Calcul du score
-                    calcScore();
+                calcScore();
+                //Initialiser badge manager
+                InitBadge();
 
             // Acheter un produit
             $("#p" + product.id + " .btn").click(function () {
@@ -61,7 +63,10 @@ $(document).ready(function () {
         // Gestion clique logo
         $(".logoProduit").click(function () {
             id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
-            StartProduction(id);
+            //Lancer la production si elle n'est pas en cours
+            if (currentWorld.products.product[id].timeleft===0){
+                    StartProduction(id);
+                }
         });
     });
     
@@ -99,14 +104,14 @@ function calcScore() {
         if(product.timeleft === 0){}
         //Si la production est en cours
         else {
-            product.timeleft = product.timeleft -(Date.now() - product.lastupdate); //Mettre à jour le temps restant
+            //product.timeleft = product.timeleft -(Date.now() - product.lastupdate); //Mettre à jour le temps restant
             //Si la produciton est finie
-            if (product.timeleft <=0){
+            if (product.timeleft === -1){
+                console.log("1 :" + product.name + product.timeleft);
                 //Reinitialiser
                 product.timeleft = 0; 
-
                 //Mettre à jour l'argent disponible
-                currentWorld.money = parseInt(currentWorld.money) + (product.revenu*product.quantite); //dans le document
+                currentWorld.money = currentWorld.money + (product.revenu*product.quantite); //dans le document
                 $("#argent").html(formatNumber(currentWorld.money) + ' $'); //à l'affichage
             }
         }
@@ -127,7 +132,6 @@ function StartProduction(id){
             //Lancer la minuterie
             $("#p"+ product.id +" .time").countdown({
                 until: + (product.timeleft/1000), compact: true, onExpiry: liftOff});
-            
             //Lancer la bar d'avancement
             bars[product.id].animate(1, {duration: product.vitesse});
             CalcCommutateur();
@@ -137,7 +141,6 @@ function StartProduction(id){
                 //Reinitialiser
                 $("#p"+ product.id +" .time").attr("class", "time"); //le minuteur
                 bars[product.id].set(0);//la barre de production
-                
                 //Afficher badge si un manager est dispo mais pas engagé
                 InitBadge();
                 product.timeleft =-1; //Mettre la fin de production en attente
@@ -224,6 +227,7 @@ function BuyProduct(product) {
     }
     CalcCommutateur(); //Recaculer les prix
     GestionBuyButton(product); //Mettre à jour cliquabilité des boutons d'achat
+    DebloqUnlock(); //Gerer les unlocks
 }
 
 //Gestion du bouton d'achat cliquable ou non
@@ -280,7 +284,7 @@ function ListerManager() {
             //Gestion du bouton "hire" cliquable ou non
             if (pallier.seuil <= currentWorld.money) {
                 pallier.unlocked = true; //la manager peut etre engagé
-                $("#m" + id + " .btn").removeAttr("disabled");
+                $("#m" + id + " .btn ").removeAttr("disabled");
             } else {
                 $("#m" + id + " .btn ").attr("disabled", "disabled");
             }
@@ -312,36 +316,66 @@ function ListerUnlock(){
     var newUnlocks;
     $(".modal-body #UnlockAll").html("");
     $(".modal-body #UnlockProduct").html("");
+    // LISTE DES UNLOCKS DE TOUT PRODUIT OU ANGE
     $.each(currentWorld.allunlocks.pallier, function (index, unlock) {
-        var id = unlock.idcible - 1;
+        var n=0;
         if (unlock.unlocked === false) { //si le unlock n'est pas en service
-            //Affichage des unlocks
-            cible = currentWorld.products.product[id];
-            newUnlocks = '<div class="row" id="u' + id + '">'
-                            + "<img class='logo' src='" + cible.logo + "'/>"
+            n=n+1;
+            //Affichage des 6ers unlocks
+            if (n <=6){ 
+            newUnlocks = '<div class="row" id="u' + unlock.id + '">'
+                            + "<img class='logo' src='" + unlock.logo + "'/>"
                             + '<div class="description">'
                                 + '<div class="name">' + unlock.name + '</div>'
                                 + '<div class="seuil">' + unlock.seuil + '</div>'
-                                + '<div class="objectif">' + cible.name +" "+ cible.palliers.pallier[id].typeratio + " x"+ cible.palliers.pallier[id].ratio +  '</div>'
+                                + '<div class="objectif">' + unlock.typeratio + " x"+ unlock.ratio +  '</div>'
                             + '</div>'
                         + '</div>';
-            $(".modal-body #UnlockAll").append(newUnlocks);
+                $(".modal-body #UnlockAll").append(newUnlocks);
+            }
         }
     });
-        $.each(currentWorld.products.product, function (index, product) {
-            $.each(product.palliers.pallier, function (index, pallier){
-        if (pallier.unlocked === false) { //si le unlock n'est pas en service
-            //Affichage des unlocks du produit
-            newUnlocks = '<div class="row" id="u' + product.id + '">'
-                            + "<img class='logo' src='" + product.logo + "'/>"
-                            + '<div class="description">'
-                                + '<div class="name">' + pallier.name + '</div>'
-                                + '<div class="seuil">' + pallier.seuil + '</div>'
-                                + '<div class="objectif">' + product.name +" "+ pallier.typeratio + " x"+ pallier.ratio +  '</div>'
-                            + '</div>'
-                        + '</div>';
-            $(".modal-body #UnlockProduct").append(newUnlocks);
-        }
-            });
+    //LISTE DES UNLOCKS PAR PRODUIT
+    $.each(currentWorld.products.product, function (index, product) {
+        var n = 0;
+        $.each(product.palliers.pallier, function (index, pallier) {
+            if (pallier.unlocked === false) { //si le unlock n'est pas en service
+                //Affichage des unlocks du produit
+                n = n + 1;
+                if (n === 1) { //Pour afficher uniquement le 1er unlock
+                    newUnlocks = '<div class="row" id="u' + product.id + '">'
+                                    + "<img class='logo' src='" + product.logo + "'/>"
+                                    + '<div class="description">'
+                                        + '<div class="name">' + pallier.name + '</div>'
+                                        + '<div class="seuil">' + pallier.seuil + '</div>'
+                                        + '<div class="objectif">' + product.name + " " + pallier.typeratio + " x" + pallier.ratio + '</div>'
+                                    + '</div>'
+                                + '</div>';
+
+                    $(".modal-body #UnlockProduct").append(newUnlocks);
+                }
+            }
+        });
+    });
+}
+
+function DebloqUnlock(){
+    // Regarder si un pallier est atteint pour un produit
+    $.each(currentWorld.products.product, function (index, product) {
+        $.each(product.palliers.pallier, function (index, unlock) {
+            if ((unlock.seuil <= product.quantite) && ((unlock.unlocked === false))){ // si on a atteint le pallier et qu'il n'est pas débloqué
+                unlock.unlocked = true;
+                console.log(unlock.typeratio);
+                console.log(product.vitesse);
+                if (unlock.typeratio === 'GAIN'){
+                    product.revenu = product.revenu * unlock.ratio;
+                    $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //Mettre à jour l'affichage
+                } else if (unlock.typeratio === 'VITESSE'){
+                    product.vitesse = product.vitesse / unlock.ratio;
+                }
+                console.log(product.vitesse);
+                toastr.success("Unlock " + unlock.typeratio + " débloqué sur " + product.name);
+            }
+        });
     });
 }
