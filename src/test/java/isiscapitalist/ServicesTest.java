@@ -49,7 +49,7 @@ public class ServicesTest {
         Services instance = new Services();
         
         World expResult = null;
-        World result = instance.readWorldFromXml();
+        World result = instance.readWorldFromXml("");
         assertNotEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
@@ -63,7 +63,7 @@ public class ServicesTest {
         System.out.println("saveWorldToXML");
         World world = null;
         Services instance = new Services();
-        instance.saveWorldToXML(world);
+        instance.saveWorldToXML(world, "");
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
