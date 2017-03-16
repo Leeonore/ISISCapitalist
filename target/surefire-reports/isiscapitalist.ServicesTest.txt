@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------
 Test set: isiscapitalist.ServicesTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.583 sec
+=======
+<<<<<<< HEAD
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.401 sec
+=======
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.584 sec
+>>>>>>> 26f68b0546a09c753b248a3e1dc17f1c9f098319
+>>>>>>> 5d096ab3d9117a4354dab37edd05c702a1ef7d35

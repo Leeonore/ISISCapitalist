@@ -63,6 +63,17 @@ public class Services {
         } catch (NullPointerException e) {
             System.err.println(e.getMessage());
         }
+<<<<<<< HEAD
+    }}
+//// prend en paramètre le pseudo du joueur et le produit
+//
+//// sur lequel une action a eu lieu (lancement manuel de production ou
+//
+//// achat d’une certaine quantité de produit)
+//
+//// renvoie false si l’action n’a pas pu être traitée 
+//    
+=======
     }
 // prend en paramètre le pseudo du joueur et le produit
 
@@ -73,6 +84,7 @@ public class Services {
 // renvoie false si l’action n’a pas pu être traitée 
     
 
+>>>>>>> 26f68b0546a09c753b248a3e1dc17f1c9f098319
 //    public Boolean updateProduct(String username, ProductType newproduct) {
 //
 //// aller chercher le monde qui correspond au joueur
@@ -144,4 +156,12 @@ public class Services {
 //        return true;
 //
 //    }
+<<<<<<< HEAD
+//<<<<<<< HEAD
+//}
+//=======
+//}
+//>>>>>>> b32aeb832a70682c73ae9fab58d93cc76d1b4017
+=======
 }
+>>>>>>> 26f68b0546a09c753b248a3e1dc17f1c9f098319

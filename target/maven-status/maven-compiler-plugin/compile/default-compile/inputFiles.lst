@@ -1,3 +1,15 @@
+<<<<<<< HEAD
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\src\main\java\isiscapitalist\GenericResource.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\ObjectFactory.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\src\main\java\isiscapitalist\ApplicationConfig.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\PallierType.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\ProductsType.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\src\main\java\isiscapitalist\Services.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\World.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\PalliersType.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\TyperatioType.java
+C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\ProductType.java
+=======
 E:\Documents\ISISCapitalist\target\generated-sources\xjc\generated\ProductsType.java
 E:\Documents\ISISCapitalist\target\generated-sources\xjc\generated\ProductType.java
 E:\Documents\ISISCapitalist\target\generated-sources\xjc\generated\TyperatioType.java
@@ -8,3 +20,4 @@ E:\Documents\ISISCapitalist\target\generated-sources\xjc\generated\ObjectFactory
 E:\Documents\ISISCapitalist\src\main\java\isiscapitalist\Services.java
 E:\Documents\ISISCapitalist\src\main\java\isiscapitalist\GenericResource.java
 E:\Documents\ISISCapitalist\src\main\java\isiscapitalist\ApplicationConfig.java
+>>>>>>> 82b4214d329853c3903956f819164b8eff214162
