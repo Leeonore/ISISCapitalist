@@ -45,6 +45,7 @@ public class GenericResource {
      * @throws javax.xml.bind.JAXBException
      */
     @GET
+    @Path("World")
     @Produces(MediaType.APPLICATION_XML)
     public World getXml(@Context HttpServletRequest request) throws JAXBException {
         String username = request.getHeader("X-user");
@@ -62,6 +63,7 @@ public class GenericResource {
     }
     
     @GET
+    @Path("World1")
     @Produces(MediaType.APPLICATION_JSON)
     public String getJson(@Context HttpServletRequest request) throws JAXBException {
         String username = request.getHeader("X-user");
