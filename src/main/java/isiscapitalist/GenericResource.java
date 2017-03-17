@@ -39,50 +39,69 @@ public class GenericResource {
         service = new Services();            
     }
 
-    /**
-     * Retrieves representation of an instance of isiscapitalist.GenericResource
-     * @return an instance of java.lang.String
-     * @throws javax.xml.bind.JAXBException
-     */
+/////////////////POUR LEONORE
     @GET
-    @Path("World")
     @Produces(MediaType.APPLICATION_XML)
-    public World getXml(@Context HttpServletRequest request) throws JAXBException {
-        String username = request.getHeader("X-user");
-        World world = service.readWorldFromXml(username);
+    public World getXml() throws JAXBException {
+        World world = service.readWorldFromXml("");
         return(world);
     }
 
-    /**
-     * PUT method for updating or creating an instance of GenericResource
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes(MediaType.APPLICATION_XML)
-    public void putXml(String content) {
-    }
-    
     @GET
-    @Path("World1")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJson(@Context HttpServletRequest request) throws JAXBException {
-        String username = request.getHeader("X-user");
-        World world = service.readWorldFromXml(username);
+    public String getJson() throws JAXBException {
+        World world = service.readWorldFromXml("");
         return(new Gson().toJson(world));
-        
     }
+}
     
-    @PUT
-    @Path("/product")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void product(String content) {
-        ProductType product = new Gson().fromJson(content, ProductType.class);
-    }
-    
-    @PUT
-    @Path("/manager")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void pallier(String content){
-        PallierType pallier = new Gson().fromJson(content, PallierType.class);
-    }
-}   
+
+///////////////////////////POUR ALEX    
+//    
+//    /**
+//     * Retrieves representation of an instance of isiscapitalist.GenericResource
+//     * @return an instance of java.lang.String
+//     * @throws javax.xml.bind.JAXBException
+//     */
+//    @GET
+//    @Path("World")
+//    @Produces(MediaType.APPLICATION_XML)
+//    public World getXml(@Context HttpServletRequest request) throws JAXBException {
+//        String username = request.getHeader("X-user");
+//        World world = service.readWorldFromXml(username);
+//        return(world);
+//    }
+//
+//    /**
+//     * PUT method for updating or creating an instance of GenericResource
+//     * @param content representation for the resource
+//     */
+//    @PUT
+//    @Consumes(MediaType.APPLICATION_XML)
+//    public void putXml(String content) {
+//    }
+//    
+//    @GET
+//    @Path("World1")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public String getJson(@Context HttpServletRequest request) throws JAXBException {
+//        String username = request.getHeader("X-user");
+//        World world = service.readWorldFromXml(username);
+//        return(new Gson().toJson(world));
+//        
+//    }
+//    
+//    @PUT
+//    @Path("/product")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void product(String content) {
+//        ProductType product = new Gson().fromJson(content, ProductType.class);
+//    }
+//    
+//    @PUT
+//    @Path("/manager")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void pallier(String content){
+//        PallierType pallier = new Gson().fromJson(content, PallierType.class);
+//    }
+//}   
