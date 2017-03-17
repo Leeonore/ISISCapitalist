@@ -337,12 +337,11 @@ function ListerUnlock(){
     });
     //LISTE DES UNLOCKS PAR PRODUIT
     $.each(currentWorld.products.product, function (index, product) {
-        var n = 0;
+        var premier;
         $.each(product.palliers.pallier, function (index, pallier) {
-            if (pallier.unlocked === false) { //si le unlock n'est pas en service
-                //Affichage des unlocks du produit
-                n = n + 1;
-                if (n === 1) { //Pour afficher uniquement le 1er unlock
+            if (pallier.unlocked === false && premier) { //si le unlock est le premier pas en service
+             //Pour afficher uniquement le 1er unlock
+                    premier = true;
                     newUnlocks = '<div class="row" id="u' + product.id + '">'
                                     + "<img class='logo' src='" + product.logo + "'/>"
                                     + '<div class="description">'
@@ -351,31 +350,48 @@ function ListerUnlock(){
                                         + '<div class="objectif">' + product.name + " " + pallier.typeratio + " x" + pallier.ratio + '</div>'
                                     + '</div>'
                                 + '</div>';
-
                     $(".modal-body #UnlockProduct").append(newUnlocks);
-                }
             }
         });
     });
 }
 
 function DebloqUnlock(){
+    //Regarder si un pallier général est atteint
+    var seuilUnlock;
+    var UnlockAll;
+    var premier = true;
+    var nP=0; //va permettre de compter le nb de produit qui ont atteint le seuil
+    $.each(currentWorld.allunlocks.pallier, function (index, unlock) {
+        if ((unlock.unlocked === false) && premier){ //Regarder si le seuil du premier pallier bloqué est atteint
+            premier =false;
+            seuilUnlock = unlock.seuil; //Va permettre de regarder si les produit on atteint le seuil
+            UnlockAll = unlock;            
+        }
+        });
     // Regarder si un pallier est atteint pour un produit
     $.each(currentWorld.products.product, function (index, product) {
+        if (product.quantite >= seuilUnlock){nP=nP+1;}//Compte le nombre de produit qui a atteind le seuil
         $.each(product.palliers.pallier, function (index, unlock) {
             if ((unlock.seuil <= product.quantite) && ((unlock.unlocked === false))){ // si on a atteint le pallier et qu'il n'est pas débloqué
                 unlock.unlocked = true;
-                console.log(unlock.typeratio);
-                console.log(product.vitesse);
-                if (unlock.typeratio === 'GAIN'){
-                    product.revenu = product.revenu * unlock.ratio;
-                    $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //Mettre à jour l'affichage
-                } else if (unlock.typeratio === 'VITESSE'){
-                    product.vitesse = product.vitesse / unlock.ratio;
-                }
-                console.log(product.vitesse);
+                ApplicUnlock(unlock, product);
                 toastr.success("Unlock " + unlock.typeratio + " débloqué sur " + product.name);
             }
         });
     });
+    if (nP === 6){//Si tous les produits ont atteind le seuil
+        $.each(currentWorld.products.product, function (index, product){ApplicUnlock(UnlockAll, product);}); //On applique le bonus à tous les produits
+        toastr.success("Unlock " + UnlockAll.typeratio + " débloqué sur tous les produits");
+    }
+
+}
+
+function ApplicUnlock(unlock, product) {
+    if (unlock.typeratio === 'GAIN') {
+        product.revenu = product.revenu * unlock.ratio;
+        $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //Mettre à jour l'affichage
+    } else if (unlock.typeratio === 'VITESSE') {
+        product.vitesse = product.vitesse / unlock.ratio;
+    }
 }
