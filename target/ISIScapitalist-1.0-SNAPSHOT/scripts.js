@@ -3,6 +3,7 @@
     var currentWorld;
     var commutateur;
     var bars = [];
+    var quantiteProd = []
 
 //Initialisation interface
 $(document).ready(function () {
@@ -111,7 +112,7 @@ function calcScore() {
                 //Reinitialiser
                 product.timeleft = 0; 
                 //Mettre à jour l'argent disponible
-                currentWorld.money = currentWorld.money + (product.revenu*product.quantite); //dans le document
+                currentWorld.money = currentWorld.money + (product.revenu*quantiteProd[id]); //dans le document
                 $("#argent").html(formatNumber(currentWorld.money) + ' $'); //à l'affichage
             }
         }
@@ -129,6 +130,7 @@ function StartProduction(id){
         product.lastupdate = Date.now(); //Enregistrer la date du lancement
         
         if (currentWorld.products.product[id].quantite > 0){ //si on peut produire
+            quantiteProd[id] = currentWorld.products.product[id].quantite; //on enregistre la quantité en production
             //Lancer la minuterie
             $("#p"+ product.id +" .time").countdown({
                 until: + (product.timeleft/1000), compact: true, onExpiry: liftOff});
@@ -145,9 +147,10 @@ function StartProduction(id){
                 InitBadge();
                 product.timeleft =-1; //Mettre la fin de production en attente
                 calcScore(); //Calculer le nouveau score
-                CalcCommutateur(); //Mettre à jour les couts
+                CalcCommutateur(); //Mettre à jour les achats possibles
+                $("#p" + product.id + " .revenuText").html((product.quantite * product.revenu)); //Mettre à jour affichage du revenu si achat pendant production
                 //Lancer la production si manager activé
-                if (product.managerUnlocked === true) {
+            if (product.managerUnlocked === true) {
                 StartProduction(product.id - 1);
             }
             }
@@ -223,7 +226,9 @@ function BuyProduct(product) {
         //Mise à jour de l'affichage
         $("#argent").html(formatNumber(currentWorld.money) + ' $');
         $("#p" + product.id + " .quantite").html(product.quantite);
+        if (product.timeleft===0){ //Si la production n'est pas en cours
         $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite));
+        }
     }
     CalcCommutateur(); //Recaculer les prix
     GestionBuyButton(product); //Mettre à jour cliquabilité des boutons d'achat
@@ -304,7 +309,10 @@ function Hire(id) {
     //Mettre à jour les managers
     currentWorld.products.product[id].managerUnlocked = true; //dans le document
     ListerManager();  //dans l'affichage
-    StartProduction(id); //Lancer la production du produit
+    
+    if (currentWorld.products.product[id].quantite > 0){
+         StartProduction(id); //Lancer la production du produit
+    }
 
     //Info bulle
     toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
@@ -337,11 +345,12 @@ function ListerUnlock(){
     });
     //LISTE DES UNLOCKS PAR PRODUIT
     $.each(currentWorld.products.product, function (index, product) {
-        var premier;
+        var premier = true;
         $.each(product.palliers.pallier, function (index, pallier) {
+        
             if (pallier.unlocked === false && premier) { //si le unlock est le premier pas en service
              //Pour afficher uniquement le 1er unlock
-                    premier = true;
+                    premier = false;
                     newUnlocks = '<div class="row" id="u' + product.id + '">'
                                     + "<img class='logo' src='" + product.logo + "'/>"
                                     + '<div class="description">'
