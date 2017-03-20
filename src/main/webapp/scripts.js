@@ -112,6 +112,7 @@ function calcScore() {
                 product.timeleft = 0; 
                 //Mettre à jour l'argent disponible
                 currentWorld.money = currentWorld.money + (product.revenu*product.quantite); //dans le document
+				currentWorld.score = currentWorld.score + (product.revenu*product.quantite); //dans le score
                 $("#argent").html(formatNumber(currentWorld.money) + ' $'); //à l'affichage
             }
         }

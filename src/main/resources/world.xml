@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation='src/main/resources/jaxb/Capitalist/schemaMonde.xsd'>
     <name>Farmland</name>
     <logo>icones/farmland.jpg</logo>
-    <money>1600000000</money>
+    <money>100</money>
     <score>0</score>
     <totalangels>0</totalangels>
     <activeangels>0</activeangels>
@@ -15,7 +15,7 @@
             <id>1</id>
             <name>poule</name>
             <logo>icones/poule.jpg</logo>
-            <cout>1</cout>
+            <cout>4</cout>
             <croissance>1.07</croissance>
             <revenu>1</revenu>
             <vitesse>1000</vitesse>
@@ -57,7 +57,7 @@
             <name>Canard</name>
             <logo>icones/canard.jpg</logo>
             <cout>60</cout>
-            <croissance>1.07</croissance>
+            <croissance>1.15</croissance>
             <revenu>60</revenu>
             <vitesse>5000</vitesse>
             <quantite>0</quantite>
@@ -98,9 +98,9 @@
             <name>Cochon</name>
             <logo>icones/cochon.jpg</logo>
             <cout>720</cout>
-            <croissance>1.07</croissance>
-            <revenu>720</revenu>
-            <vitesse>50000</vitesse>
+            <croissance>1.14</croissance>
+            <revenu>540</revenu>
+            <vitesse>20000</vitesse>
             <quantite>0</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
@@ -139,9 +139,9 @@
             <name>Vache</name>
             <logo>icones/vache.jpg</logo>
             <cout>8640</cout>
-            <croissance>1.07</croissance>
-            <revenu>8640</revenu>
-            <vitesse>500000</vitesse>
+            <croissance>1.13</croissance>
+            <revenu>4320</revenu>
+            <vitesse>96000</vitesse>
             <quantite>0</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
@@ -180,9 +180,9 @@
             <name>Poney</name>
             <logo>icones/poney.png</logo>
             <cout>103680</cout>
-            <croissance>1.07</croissance>
-            <revenu>103680</revenu>
-            <vitesse>500000</vitesse>
+            <croissance>1.12</croissance>
+            <revenu>51840</revenu>
+            <vitesse>384000</vitesse>
             <quantite>0</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
@@ -220,10 +220,10 @@
             <id>6</id>
             <name>Produit6</name>
             <logo>icones/poney.png</logo>
-            <cout>1244000</cout>
-            <croissance>1.07</croissance>
-            <revenu>124400</revenu>
-            <vitesse>50000000</vitesse>
+            <cout>1244160</cout>
+            <croissance>1.11</croissance>
+            <revenu>622080</revenu>
+            <vitesse>1536000</vitesse>
             <quantite>0</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
@@ -262,7 +262,7 @@
         <pallier>
             <name>Unlock1</name>
             <logo>icones/bonus.png</logo>
-            <seuil>2</seuil>
+            <seuil>25</seuil>
             <idcible>-1</idcible>
             <ratio>3</ratio>
             <typeratio>gain</typeratio>
@@ -271,7 +271,7 @@
         <pallier>
             <name>Unlock2</name>
             <logo>icones/bonus.png</logo>
-            <seuil>25</seuil>
+            <seuil>50</seuil>
             <idcible>-1</idcible>
             <ratio>3</ratio>
             <typeratio>vitesse</typeratio>
