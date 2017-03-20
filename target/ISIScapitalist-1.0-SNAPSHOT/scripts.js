@@ -3,6 +3,7 @@
     var currentWorld;
     var commutateur;
     var bars = [];
+    var quantiteProd = [];
 
 //Initialisation interface
 $(document).ready(function () {
@@ -50,7 +51,8 @@ $(document).ready(function () {
                 //Calcul du score
                 calcScore();
                 //Initialiser badge manager
-                InitBadge();
+                InitBadgeManager();
+                InitBadgeUpgrades();
 
             // Acheter un produit
             $("#p" + product.id + " .btn").click(function () {
@@ -94,7 +96,26 @@ $(document).ready(function () {
         ListerUnlock();
     });
     
-
+    //Ouvrir la fenêtre des upgrades
+    $("#cashbutton").click(function () {
+        $("#upgrades").modal('show');
+        //Initialisation des managers
+        ListerUpgrades();
+    });
+    
+    //Ouvrir la fenêtre investor
+    $("#investorbutton").click(function () {
+        $("#investor").modal('show');
+        //Initialisation des managers
+        AfficherInvestor();
+    });
+    
+    //Ouvrir la fenêtre des anges
+    $("#angelbutton").click(function () {
+        $("#anges").modal('show');
+        //Initialisation des managers
+        ListerAngel();
+    });
 });
 
 //Calculer le score (argent ...)
@@ -107,16 +128,16 @@ function calcScore() {
             //product.timeleft = product.timeleft -(Date.now() - product.lastupdate); //Mettre à jour le temps restant
             //Si la produciton est finie
             if (product.timeleft === -1){
-                console.log("1 :" + product.name + product.timeleft);
                 //Reinitialiser
                 product.timeleft = 0; 
                 //Mettre à jour l'argent disponible
-                currentWorld.money = currentWorld.money + (product.revenu*product.quantite); //dans le document
+                var gain = product.revenu*quantiteProd[id] *( 1 + currentWorld.activeangels * currentWorld.angelbonus/100);
+		currentWorld.score = currentWorld.score + (gain); //dans le score
+                currentWorld.money = currentWorld.money + (gain); //dans le document
+                
                 $("#argent").html(formatNumber(currentWorld.money) + ' $'); //à l'affichage
             }
         }
-        
-
         //Gestion cliquabilité des boutons
         GestionBuyButton(product); 
     });  
@@ -129,6 +150,7 @@ function StartProduction(id){
         product.lastupdate = Date.now(); //Enregistrer la date du lancement
         
         if (currentWorld.products.product[id].quantite > 0){ //si on peut produire
+            quantiteProd[id] = currentWorld.products.product[id].quantite; //on enregistre la quantité en production
             //Lancer la minuterie
             $("#p"+ product.id +" .time").countdown({
                 until: + (product.timeleft/1000), compact: true, onExpiry: liftOff});
@@ -142,12 +164,15 @@ function StartProduction(id){
                 $("#p"+ product.id +" .time").attr("class", "time"); //le minuteur
                 bars[product.id].set(0);//la barre de production
                 //Afficher badge si un manager est dispo mais pas engagé
-                InitBadge();
+                InitBadgeManager();
+                // Afficher badge si upgrades débloquées
+                InitBadgeUpgrades();
                 product.timeleft =-1; //Mettre la fin de production en attente
                 calcScore(); //Calculer le nouveau score
-                CalcCommutateur(); //Mettre à jour les couts
+                CalcCommutateur(); //Mettre à jour les achats possibles
+                $("#p" + product.id + " .revenuText").html((product.quantite * product.revenu)); //Mettre à jour affichage du revenu si achat pendant production
                 //Lancer la production si manager activé
-                if (product.managerUnlocked === true) {
+            if (product.managerUnlocked === true) {
                 StartProduction(product.id - 1);
             }
             }
@@ -223,7 +248,9 @@ function BuyProduct(product) {
         //Mise à jour de l'affichage
         $("#argent").html(formatNumber(currentWorld.money) + ' $');
         $("#p" + product.id + " .quantite").html(product.quantite);
+        if (product.timeleft===0){ //Si la production n'est pas en cours
         $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite));
+        }
     }
     CalcCommutateur(); //Recaculer les prix
     GestionBuyButton(product); //Mettre à jour cliquabilité des boutons d'achat
@@ -253,11 +280,21 @@ function formatNumber(number) {
 }
 
 //Afficher "new" lorsqu'un nouveau manager est disponible
-function InitBadge() {
+function InitBadgeManager() {
     $.each(currentWorld.managers.pallier, function (index ,pallier) {
         //Si il a l'argent nécessaire mais que le manager n'est pas engagé
         if ((pallier.seuil <= currentWorld.money) && (currentWorld.products.product[pallier.idcible - 1].managerUnlocked === false)) {
             $("#managersbutton .badge").text("New");
+        }
+    });
+}
+
+//Afficher "new" lorsqu'un nouveau upgrades est disponible
+function InitBadgeUpgrades() {
+    $.each(currentWorld.upgrades.pallier, function (index ,pallier) {
+        //Si il a l'argent nécessaire mais que le manager n'est pas engagé
+        if ((pallier.seuil <= currentWorld.money) && (pallier.unlocked === false)) {
+            $("#cashbutton .badge").text("New");
         }
     });
 }
@@ -290,25 +327,7 @@ function ListerManager() {
             }
         }
     });
-}
-
-//Engager un manager
-function Hire(id) {
-    $("#managersbutton .badge").text(""); // Retirer le badge "new"
-    var manager = currentWorld.managers.pallier[id];
-
-    //Mettre à jour argent disponible
-    currentWorld.money = currentWorld.money - manager.seuil; //dans le document
-    $("#argent").html(currentWorld.money + ' $'); //dans l'affichage
-
-    //Mettre à jour les managers
-    currentWorld.products.product[id].managerUnlocked = true; //dans le document
-    ListerManager();  //dans l'affichage
-    StartProduction(id); //Lancer la production du produit
-
-    //Info bulle
-    toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
-    toastr.success("Manager engagé ! ");
+    $("#managersbutton .badge").text(""); //enlever le badge
 }
 
 //Initialisation de la liste des unlocks
@@ -337,17 +356,18 @@ function ListerUnlock(){
     });
     //LISTE DES UNLOCKS PAR PRODUIT
     $.each(currentWorld.products.product, function (index, product) {
-        var premier;
+        var premier = true;
         $.each(product.palliers.pallier, function (index, pallier) {
+        
             if (pallier.unlocked === false && premier) { //si le unlock est le premier pas en service
              //Pour afficher uniquement le 1er unlock
-                    premier = true;
+                    premier = false;
                     newUnlocks = '<div class="row" id="u' + product.id + '">'
                                     + "<img class='logo' src='" + product.logo + "'/>"
                                     + '<div class="description">'
                                         + '<div class="name">' + pallier.name + '</div>'
                                         + '<div class="seuil">' + pallier.seuil + '</div>'
-                                        + '<div class="objectif">' + product.name + " " + pallier.typeratio + " x" + pallier.ratio + '</div>'
+                                        + '<div class="objectif">'+ pallier.typeratio + " x" + pallier.ratio + " sur " + product.name +'</div>'
                                     + '</div>'
                                 + '</div>';
                     $(".modal-body #UnlockProduct").append(newUnlocks);
@@ -356,6 +376,93 @@ function ListerUnlock(){
     });
 }
 
+//Initialisation de la liste des upgrades
+function ListerUpgrades() {
+    var newUpgrades;
+    var n=1;
+    $("#upgrades .modal-body").html("");
+    $.each(currentWorld.upgrades.pallier, function (index, upgrade) {
+        if (upgrade.unlocked === false && n<=5) { //si l'upgrade n'est pas acheté et les 5ers
+            //Enregistrer la cible de l'upgrade
+            var cible;
+            if (upgrade.idcible>0){cible = currentWorld.products.product[upgrade.idcible -1].name;} 
+            else if (upgrade.idcible ===0){cible = "tous les produits";} 
+            else{cible = "les anges";}
+            //Affichage des upgrades
+            newUpgrades = '<div class="row" id="c' + n + '">'
+                            + "<img class='logo' src='" + upgrade.logo + "'/>"
+                            + '<div class="description">'
+                                + '<div class="name">' + upgrade.name + '</div>'
+                                + '<div class="seuil">' + upgrade.seuil + '</div>'
+                                + '<div class="objectif">' + upgrade.typeratio + " x" + upgrade.ratio + " sur " + cible +'</div>'
+                            + '</div>'
+                            + '<button class="btn btn-default" disabled onclick="BuyUpgrades(' + n + ')" type="submit">Buy</button>'
+                        + '</div>';
+            $("#upgrades .modal-body").append(newUpgrades);
+            
+            //Gestion du bouton "buy" cliquable ou non
+            if (upgrade.seuil <= currentWorld.money) {
+                $("#c" + n + " .btn ").removeAttr("disabled");
+            } else {
+                $("#c" + n + " .btn ").attr("disabled", "disabled");
+            }
+            n=n+1;
+        }
+    });
+    $("#cashbutton .badge").text("");
+}
+
+//Lister les anges
+function ListerAngel(){
+    var newAngel;
+    $("#anges .modal-body").html("");
+    $.each(currentWorld.angelupgrades.pallier, function (index, ange) {
+        var id = ange.idcible - 1;
+            //Affichage des ange
+            newAnge = '<div class="row" id="a' + id + '">'
+                            + "<img class='logo' src='" + ange.logo + "'/>"
+                            + '<div class="description">'
+                                + '<div class="name">' + ange.name + '</div>'
+                                + '<div class="seuil">' + ange.seuil + '</div>'
+                            + '</div>'
+                            + '<button class="btn btn-default" disabled onclick="BuyAngel(' + id + ')" type="submit">Buy !</button>'
+                        + '</div>';
+            $("#anges .modal-body").append(newAnge);
+            
+            //Gestion du bouton "buy" cliquable ou non
+//            if (ange.seuil <= currentWorld.money) {
+//                ange.unlocked = true; //l'ange peut etre acheté
+//                $("#a" + id + " .btn ").removeAttr("disabled");
+//            } else {
+//                $("#a" + id + " .btn ").attr("disabled", "disabled");
+//            }
+        
+    });
+}
+
+//Engager un manager
+function Hire(id) {
+    $("#managersbutton .badge").text(""); // Retirer le badge "new"
+    var manager = currentWorld.managers.pallier[id];
+
+    //Mettre à jour argent disponible
+    currentWorld.money = currentWorld.money - manager.seuil; //dans le document
+    $("#argent").html(currentWorld.money + ' $'); //dans l'affichage
+
+    //Mettre à jour les managers
+    currentWorld.products.product[id].managerUnlocked = true; //dans le document
+    ListerManager();  //dans l'affichage
+    
+    if (currentWorld.products.product[id].quantite > 0){
+         StartProduction(id); //Lancer la production du produit
+    }
+
+    //Info bulle
+    toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
+    toastr.success("Manager engagé ! ");
+}
+
+//Debloquage des unlocks
 function DebloqUnlock(){
     //Regarder si un pallier général est atteint
     var seuilUnlock;
@@ -375,23 +482,66 @@ function DebloqUnlock(){
         $.each(product.palliers.pallier, function (index, unlock) {
             if ((unlock.seuil <= product.quantite) && ((unlock.unlocked === false))){ // si on a atteint le pallier et qu'il n'est pas débloqué
                 unlock.unlocked = true;
-                ApplicUnlock(unlock, product);
+                ApplicBonus(unlock, product);
                 toastr.success("Unlock " + unlock.typeratio + " débloqué sur " + product.name);
             }
         });
     });
     if (nP === 6){//Si tous les produits ont atteind le seuil
-        $.each(currentWorld.products.product, function (index, product){ApplicUnlock(UnlockAll, product);}); //On applique le bonus à tous les produits
+        $.each(currentWorld.products.product, function (index, product){ApplicBonus(UnlockAll, product);}); //On applique le bonus à tous les produits
         toastr.success("Unlock " + UnlockAll.typeratio + " débloqué sur tous les produits");
     }
 
 }
 
-function ApplicUnlock(unlock, product) {
-    if (unlock.typeratio === 'GAIN') {
-        product.revenu = product.revenu * unlock.ratio;
+//Application des unlocks débloqué
+function ApplicBonus(objet, product) {
+    if (objet.typeratio === 'GAIN') {
+        product.revenu = product.revenu * objet.ratio;
         $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //Mettre à jour l'affichage
-    } else if (unlock.typeratio === 'VITESSE') {
-        product.vitesse = product.vitesse / unlock.ratio;
+    } else if (objet.typeratio === 'VITESSE') {
+        product.vitesse = product.vitesse / objet.ratio;
+    }else { //Pour les bonus de type 'ANGE')
+            if (currentWorld.activeangels>0)  { //si il y a des anges actifs
+                currentWorld.angelbonus = currentWorld.angelbonus + objet.ratio*currentWorld.activeangels;
+            }          
+        }
+}
+
+function BuyUpgrades(id){
+    var upgrade = currentWorld.upgrades.pallier[id-1];
+    upgrade.unlocked = true;
+    //Appliquer le bonus
+    if (upgrade.idcible > 0) { //Si upgrade concerne un produit
+        product = currentWorld.products.product[upgrade.idcible -1];
+        ApplicBonus(upgrade, product);
+    }else if (upgrade.idcible === 0){ //Si upgrade concerne tous les produits
+        $.each(currentWorld.products.product, function (index, product) {
+            ApplicBonus(upgrade, product);
+        });
     }
+    //Mettre à jour argent disponible
+    currentWorld.money = currentWorld.money - upgrade.seuil; //dans le document
+    $("#argent").html(currentWorld.money + ' $'); //dans l'affichage
+    // Mise à jour
+    ListerUpgrades(); //de l'affichage
+    InitBadgeUpgrades(); //du badge
+}
+
+function AfficherInvestor(){
+    $(".TotalAngel").html(currentWorld.totalangels + "Total angels");
+    $(".BonusAngel").html(currentWorld.angelbonus + "% Bonus par ange");
+    var angel = 150 * Math.sqrt(currentWorld.score/Math.pow(10,5)) - currentWorld.totalangels;
+    $("#investor .modal-body").append('<button class="btn btn-default" onclick="ResetWorld()" type="submit">' + angel + ' angels </br> Restart pour les utiliser.</button>');           
+}
+
+function ResetWorld(){
+//    $.ajax(serveurUrl + "webresources/generic/world", {type: "DELETE", statusCode: {304: function () {
+//                syncError("Echec du reset");
+//            }}, error: function () {
+//            syncError("Echec de la requete");
+//        }}).done(function () {
+//        location.reload();
+//    });
+    window.location.reload();
 }

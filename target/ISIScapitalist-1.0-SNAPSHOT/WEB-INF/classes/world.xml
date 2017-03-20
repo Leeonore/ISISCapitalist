@@ -4,8 +4,8 @@
     xsi:noNamespaceSchemaLocation='src/main/resources/jaxb/Capitalist/schemaMonde.xsd'>
     <name>Farmland</name>
     <logo>icones/farmland.jpg</logo>
-    <money>100</money>
-    <score>0</score>
+    <money>249999</money>
+    <score>25000</score>
     <totalangels>0</totalangels>
     <activeangels>0</activeangels>
     <angelbonus>2</angelbonus>
@@ -381,17 +381,17 @@
     </upgrades>
     <angelupgrades>
         <pallier>
-            <name>angel1</name>
-            <logo>icones/angel.png</logo>
-            <seuil>10000</seuil>
+            <name>Angel Sacrifice</name>
+            <logo>icones/ange.jpg</logo>
+            <seuil>10</seuil>
             <idcible>0</idcible>
             <ratio>3</ratio>
             <typeratio>gain</typeratio>
             <unlocked>false</unlocked>
         </pallier>
         <pallier>
-            <name>angel2</name>
-            <logo>icones/angel.png</logo>
+            <name>Angelic Multiny</name>
+            <logo>icones/ange.jpg</logo>
             <seuil>100000</seuil>
             <idcible>-1</idcible>
             <ratio>2</ratio>
@@ -399,8 +399,8 @@
             <unlocked>false</unlocked>
         </pallier>
         <pallier>
-            <name>angel3</name>
-            <logo>icones/angel.png</logo>
+            <name>Angelic Rebellion</name>
+            <logo>icones/ange.jpg</logo>
             <seuil>100000000</seuil>
             <idcible>-1</idcible>
             <ratio>2</ratio>

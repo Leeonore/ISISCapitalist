@@ -33,7 +33,7 @@
             <div class="row"> <!-- Bouton cliquable -->
                 <div id="Menu" class="col-md-2">
                     <div class="buttonleft btn btn-primary btn-lg" data-toggle="modal" data-target="" id="unlocksbutton"> Unlocks </div></br>
-                    <div class="buttonleft btn btn-primary btn-lg" data-toggle="modal" data-target="" id="cashbutton"> Cash Upgrades </div></br>
+                    <div class="buttonleft btn btn-primary btn-lg" data-toggle="modal" data-target="" id="cashbutton"><span class="badge"></span> Cash Upgrades </div></br>
                     <div class="buttonleft btn btn-primary btn-lg" data-toggle="modal" data-target="" id="angelbutton"> Angel Upgrades </div></br>
                     <div class="buttonleft btn btn-primary btn-lg" data-toggle="modal" data-target="" id="managersbutton" ><span class="badge"></span> Managers </div></br>
                     <div class="buttonleft btn btn-primary btn-lg" data-toggle="modal" data-target="#managers" id="investorbutton"> Investor </div></br>
@@ -53,7 +53,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span> 
                         </button> 
-                        <h4 class="modal-title" id="myModalLabel">Managers</h4> 
+                        <h4 class="modal-title" id="EnteteManagers">Managers</h4> 
                     </div> 
                     <div class="modal-body"> 
                     </div> 
@@ -73,11 +73,73 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span> 
                         </button> 
-                        <h4 class="modal-title" id="myModalLabel">Tu veux augmenter tes profits? N'hésites pas à investir !</h4> 
+                        <h4 class="modal-title" id="EnteteUnlock">Tu veux augmenter tes profits? N'hésites pas à investir !</h4> 
                     </div> 
                     <div class="modal-body">
                         <div id="UnlockProduct" class="col-md-6"></div>
                         <div id="UnlockAll" class="col-md-6"></div>
+                    </div> 
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div> 
+                </div> 
+            </div> 
+        </div>
+
+        <!-- Pop Up des upgrades : -->
+        <div id="upgrades" class="modal fade"> 
+            <div class="unlocks"> <!-- contenu principal de la fenêtre --> </div> 
+            <div class="modal-dialog" role="document"> 
+                <div class="modal-content"> 
+                    <div class="modal-header"> 
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span> 
+                        </button> 
+                        <h4 class="modal-title" id="EnteteUpgrades">Upgrades</h4> 
+                    </div> 
+                    <div class="modal-body">
+                    </div> 
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div> 
+                </div> 
+            </div> 
+        </div>
+        
+        <!-- Pop Up des ange : -->
+        <div id="anges" class="modal fade"> 
+            <div class="anges"> <!-- contenu principal de la fenêtre --> </div> 
+            <div class="modal-dialog" role="document"> 
+                <div class="modal-content"> 
+                    <div class="modal-header"> 
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span> 
+                        </button> 
+                        <h4 class="modal-title" id="EnteteAnge">Anges</h4> 
+                    </div> 
+                    <div class="modal-body">
+                    </div> 
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div> 
+                </div> 
+            </div> 
+        </div>
+        
+        <!-- Pop Up de investor : -->
+        <div id="investor" class="modal fade"> 
+            <div class="investor"> <!-- contenu principal de la fenêtre --> </div> 
+            <div class="modal-dialog" role="document"> 
+                <div class="modal-content"> 
+                    <div class="modal-header"> 
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span> 
+                        </button> 
+                        <h4 class="modal-title" id="EnteteInvestor">investor</h4> 
+                    </div> 
+                    <div class="modal-body">
+                        <div class="TotalAngel"></div>
+                        <div class="BonusAngel"></div>
                     </div> 
                     <div class="modal-footer"> 
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
