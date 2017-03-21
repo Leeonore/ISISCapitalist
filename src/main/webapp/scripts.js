@@ -43,16 +43,9 @@ $(document).ready(function () {
             }
           
             //Inialisation
-                // Calcul du commutateur au lancement
-                commutateur = 1;
-                CalcCommutateur();
                 // Initialisation de la bar
                 bars[product.id] = new ProgressBar.Line("#r" + product.id, {strokeWidth: 10, color: '#00ff00'});
-                //Calcul du score
-                calcScore();
-                //Initialiser badge manager
-                InitBadgeManager();
-                InitBadgeUpgrades();
+
 
             // Acheter un produit
             $("#p" + product.id + " .btn").click(function () {
@@ -62,13 +55,25 @@ $(document).ready(function () {
             });
         });
 
+
+        
+        // Calcul du commutateur au lancement
+        commutateur = 1;
+        CalcCommutateur();
+        //Calcul du score
+        calcScore();
+        //Initialiser les badges "new"
+        InitBadgeManager();
+        InitBadgeUpgrades();
+        InitBadgeAnge();
+        
         // Gestion clique logo
         $(".logoProduit").click(function () {
             id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
             //Lancer la production si elle n'est pas en cours
-            if (currentWorld.products.product[id].timeleft===0){
-                    StartProduction(id);
-                }
+            if (currentWorld.products.product[id].timeleft === 0) {
+                StartProduction(id);
+            }
         });
     });
     
@@ -414,7 +419,7 @@ function ListerUpgrades() {
 
 //Lister les anges
 function ListerAngel(){
-    var newAngel;
+    var newAnge;
     $("#anges .modal-body").html("");
     $.each(currentWorld.angelupgrades.pallier, function (index, ange) {
         var id = ange.idcible - 1;
@@ -425,17 +430,18 @@ function ListerAngel(){
                                 + '<div class="name">' + ange.name + '</div>'
                                 + '<div class="seuil">' + ange.seuil + '</div>'
                             + '</div>'
-                            + '<button class="btn btn-default" disabled onclick="BuyAngel(' + id + ')" type="submit">Buy !</button>'
+                            + '<button class="btn btn-default" disabled onclick="BuyAngel('+ id +')" type="submit">Buy !</button>'
                         + '</div>';
+                console.log(ange);
             $("#anges .modal-body").append(newAnge);
             
             //Gestion du bouton "buy" cliquable ou non
-//            if (ange.seuil <= currentWorld.money) {
-//                ange.unlocked = true; //l'ange peut etre acheté
-//                $("#a" + id + " .btn ").removeAttr("disabled");
-//            } else {
-//                $("#a" + id + " .btn ").attr("disabled", "disabled");
-//            }
+            if (ange.seuil <= currentWorld.activeangels) {
+                ange.unlocked = true; //l'ange peut etre acheté
+                $("#a" + id + " .btn ").removeAttr("disabled");
+            } else {
+                $("#a" + id + " .btn ").attr("disabled", "disabled");
+            }
         
     });
 }
@@ -508,6 +514,7 @@ function ApplicBonus(objet, product) {
         }
 }
 
+//Acheter un upgrades
 function BuyUpgrades(id){
     var upgrade = currentWorld.upgrades.pallier[id-1];
     upgrade.unlocked = true;
@@ -528,13 +535,15 @@ function BuyUpgrades(id){
     InitBadgeUpgrades(); //du badge
 }
 
+//Afficher la fênetre Investor
 function AfficherInvestor(){
     $(".TotalAngel").html(currentWorld.totalangels + "Total angels");
     $(".BonusAngel").html(currentWorld.angelbonus + "% Bonus par ange");
-    var angel = 150 * Math.sqrt(currentWorld.score/Math.pow(10,5)) - currentWorld.totalangels;
+    var angel = Math.floor(150 * Math.sqrt(currentWorld.score/Math.pow(10,5)) - currentWorld.totalangels);
     $("#investor .modal-body").append('<button class="btn btn-default" onclick="ResetWorld()" type="submit">' + angel + ' angels </br> Restart pour les utiliser.</button>');           
 }
 
+//ResertWorld pour avoir les anges
 function ResetWorld(){
 //    $.ajax(serveurUrl + "webresources/generic/world", {type: "DELETE", statusCode: {304: function () {
 //                syncError("Echec du reset");
@@ -544,4 +553,35 @@ function ResetWorld(){
 //        location.reload();
 //    });
     window.location.reload();
+}
+
+//Afficher "new" lorsqu'un nouveau AngeUpgrade est disponible
+function InitBadgeAnge() {
+    $.each(currentWorld.angelupgrades.pallier, function (index ,ange) {
+        //Si il a assez d'ange et que le manager n'est pas engagé
+        if ((ange.seuil <= currentWorld.activeangels) && (ange.unlocked === false)) {
+            $("#angelbutton .badge").text("New");
+        }
+    });
+}
+
+function BuyAngel(ange){
+    $("#angelbutton .badge").text(""); // Retirer le badge "new"
+
+    //Mettre à jour les anges actifs
+    currentWorld.activeangels = currentWorld.activeangels - ange.seuil;
+    
+    //Mettre à jour les managers
+    ange.unlocked = true; //dans le document
+    ListerAngel();  //dans l'affichage
+    
+    //Appliquer le bonus
+    if (ange.idcible > 0) { //Si upgrade concerne un produit
+        produit = currentWorld.products.product[ange.idcible -1];
+        ApplicBonus(ange, product);
+    }else if (ange.idcible === 0){ //Si upgrade concerne tous les produits
+        $.each(currentWorld.products.product, function (index, product) {
+            ApplicBonus(ange, product);
+        });
+    }
 }
