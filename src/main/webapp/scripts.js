@@ -420,28 +420,27 @@ function ListerUpgrades() {
 //Lister les anges
 function ListerAngel(){
     var newAnge;
+    var n=1;
     $("#anges .modal-body").html("");
     $.each(currentWorld.angelupgrades.pallier, function (index, ange) {
-        var id = ange.idcible - 1;
             //Affichage des ange
-            newAnge = '<div class="row" id="a' + id + '">'
+            newAnge = '<div class="row" id="a' + n + '">'
                             + "<img class='logo' src='" + ange.logo + "'/>"
                             + '<div class="description">'
                                 + '<div class="name">' + ange.name + '</div>'
                                 + '<div class="seuil">' + ange.seuil + '</div>'
                             + '</div>'
-                            + '<button class="btn btn-default" disabled onclick="BuyAngel('+ id +')" type="submit">Buy !</button>'
+                            + '<button class="btn btn-default" disabled onclick="BuyAngel('+ n +')" type="submit">Buy !</button>'
                         + '</div>';
-                console.log(ange);
-            $("#anges .modal-body").append(newAnge);
-            
+        $("#anges .modal-body").append(newAnge);
             //Gestion du bouton "buy" cliquable ou non
             if (ange.seuil <= currentWorld.activeangels) {
                 ange.unlocked = true; //l'ange peut etre acheté
-                $("#a" + id + " .btn ").removeAttr("disabled");
+                $("#a" + n + " .btn ").removeAttr("disabled");
             } else {
-                $("#a" + id + " .btn ").attr("disabled", "disabled");
+                $("#a" + n + " .btn ").attr("disabled", "disabled");
             }
+            n=n+1;
         
     });
 }
@@ -565,7 +564,10 @@ function InitBadgeAnge() {
     });
 }
 
-function BuyAngel(ange){
+function BuyAngel(n){
+    ange = $("#a"+n);
+    seuil = ange.children("seuil");
+    console.log("seuil=" + seuil);
     $("#angelbutton .badge").text(""); // Retirer le badge "new"
 
     //Mettre à jour les anges actifs
