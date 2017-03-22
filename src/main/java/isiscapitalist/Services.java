@@ -9,7 +9,9 @@ import java.util.HashSet;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
+import static jdk.nashorn.tools.ShellFunctions.input;
 
 public class Services {
 
@@ -29,29 +31,27 @@ public class Services {
     
     
     public World readWorldFromXml(String username) throws JAXBException {
-        String pseudo = "world.xml";
-        if ( hset.contains(username)) {
-            pseudo = username + "-" + pseudo;
-        } 
-        else { hset.add(username);
-        }
         try {
             cont = JAXBContext.newInstance(World.class);
             u = cont.createUnmarshaller();
-            InputStream input = getClass().getClassLoader().getResourceAsStream(pseudo);
-            world = (World) u.unmarshal(input);
         } catch (JAXBException e) {
             System.err.println(e.getMessage());
-        } catch (NullPointerException e) {
-            System.err.println(e.getMessage());
+            this.world = null;
+        } 
+        try {
+            world = (World) u.unmarshal(new File(username+"-world.xml"));
+        } catch (UnmarshalException e) {
+            InputStream input = getClass().getClassLoader().getResourceAsStream("world.xml");
+            world = (World) u.unmarshal(input);
         }
-        return (world);
+         return world;   
     }
 
     /**
      * Sérialisation du XML
      *
      * @param world
+     * @param username
      * @throws JAXBException
      */
     public void saveWorldToXML(World world, String username) throws JAXBException {
@@ -67,9 +67,9 @@ public class Services {
 	
 } // Alex, commente cette accolade
 
-////////////////////////Partie pour Alex //////////////////////////////////////////////////////
-
-
+//////////////////////////Partie pour Alex //////////////////////////////////////////////////////
+//
+//
 //// prend en paramètre le pseudo du joueur et le produit
 //
 //// sur lequel une action a eu lieu (lancement manuel de production ou
@@ -78,7 +78,7 @@ public class Services {
 //
 //// renvoie false si l’action n’a pas pu être traitée 
 //    
-//    public Boolean updateProduct(String username, ProductType newproduct) {
+//    public Boolean updateProduct(String username, ProductType newproduct) throws JAXBException {
 //
 //// aller chercher le monde qui correspond au joueur
 //        World world = getWorld(username);
@@ -107,14 +107,14 @@ public class Services {
 //        }
 //
 //// sauvegarder les changements du monde
-//        saveWordlToXml(username, world);
+//        saveWorldToXML(world, username);
 //
 //        return true;
 //    }
 //
 //// prend en paramètre le pseudo du joueur et le manager acheté.
 //// renvoie false si l’action n’a pas pu être traitée
-//    public Boolean updateManager(String username, PallierType newmanager) {
+//    public Boolean updateManager(String username, PallierType newmanager) throws JAXBException {
 //
 //// aller chercher le monde qui correspond au joueur
 //        World world = getWorld(username);
@@ -144,13 +144,8 @@ public class Services {
 //// débloquer le manager de ce produit
 //// soustraire de l'argent du joueur le cout du manager
 //// sauvegarder les changements au monde
-//        saveWordlToXml(username, world);
+//        saveWorldToXML(world, username);
 //
 //        return true;
 //
 //    }
-//<<<<<<< HEAD
-//}
-//=======
-//}
-//>>>>>>> b32aeb832a70682c73ae9fab58d93cc76d1b4017
