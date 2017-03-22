@@ -4,10 +4,10 @@
     xsi:noNamespaceSchemaLocation='src/main/resources/jaxb/Capitalist/schemaMonde.xsd'>
     <name>Farmland</name>
     <logo>icones/farmland.jpg</logo>
-    <money>249999</money>
-    <score>25000</score>
+    <money>4</money>
+    <score>4</score>
     <totalangels>0</totalangels>
-    <activeangels>11</activeangels>
+    <activeangels>0</activeangels>
     <angelbonus>2</angelbonus>
     <lastupdate>0</lastupdate>
     <products>

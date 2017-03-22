@@ -13,7 +13,7 @@ $(document).ready(function () {
         currentWorld = world;
         $("#nomMonde").html(currentWorld.name);
         $("#nomMonde").prepend("<img id='imageMonde' class='img-circle' src='" + currentWorld.logo + "' alt='test'/>");
-        $("#argent").html(currentWorld.money + ' $');
+        $("#argent").html(formatNumber(currentWorld.money) + ' $');
         
         // Création des produits
         $.each(world.products.product, function (index, product) {
@@ -135,6 +135,7 @@ function calcScore() {
             if (product.timeleft === -1){
                 //Reinitialiser
                 product.timeleft = 0; 
+                
                 //Mettre à jour l'argent disponible
                 var gain = product.revenu*quantiteProd[id] *( 1 + currentWorld.activeangels * currentWorld.angelbonus/100);
 		currentWorld.score = currentWorld.score + (gain); //dans le score
@@ -401,10 +402,13 @@ function ListerUpgrades() {
                                 + '<div class="seuil">' + upgrade.seuil + '</div>'
                                 + '<div class="objectif">' + upgrade.typeratio + " x" + upgrade.ratio + " sur " + cible +'</div>'
                             + '</div>'
-                            + '<button class="btn btn-default" disabled onclick="BuyUpgrades(' + n + ')" type="submit">Buy</button>'
+                            + '<button class="btn btn-default" disabled type="submit">Buy</button>'
                         + '</div>';
             $("#upgrades .modal-body").append(newUpgrades);
-            
+            //Gestion du clique sur le bouton, pas fait directement dans le bouton car refus d'un parametre de type objet
+            $("#c" + n + " .btn ").click(function () {
+                BuyUpgrades(upgrade);
+            });
             //Gestion du bouton "buy" cliquable ou non
             if (upgrade.seuil <= currentWorld.money) {
                 $("#c" + n + " .btn ").removeAttr("disabled");
@@ -424,24 +428,28 @@ function ListerAngel(){
     $("#anges .modal-body").html("");
     $.each(currentWorld.angelupgrades.pallier, function (index, ange) {
             //Affichage des ange
+            if (ange.unlocked === false && n<=5)
             newAnge = '<div class="row" id="a' + n + '">'
                             + "<img class='logo' src='" + ange.logo + "'/>"
                             + '<div class="description">'
                                 + '<div class="name">' + ange.name + '</div>'
                                 + '<div class="seuil">' + ange.seuil + '</div>'
                             + '</div>'
-                            + '<button class="btn btn-default" disabled onclick="BuyAngel('+ n +')" type="submit">Buy !</button>'
+                            + '<button class="btn btn-default" disabled type="submit">Buy !</button>'
                         + '</div>';
         $("#anges .modal-body").append(newAnge);
+            //Gestion du clique sur le bouton, pas fait directement dans le bouton car refus d'un parametre de type objet
+            $("#a" + n + " .btn ").click(function () {
+                BuyAngel(ange);
+            });
             //Gestion du bouton "buy" cliquable ou non
             if (ange.seuil <= currentWorld.activeangels) {
-                ange.unlocked = true; //l'ange peut etre acheté
+                //l'ange peut etre acheté
                 $("#a" + n + " .btn ").removeAttr("disabled");
             } else {
                 $("#a" + n + " .btn ").attr("disabled", "disabled");
             }
             n=n+1;
-        
     });
 }
 
@@ -452,7 +460,7 @@ function Hire(id) {
 
     //Mettre à jour argent disponible
     currentWorld.money = currentWorld.money - manager.seuil; //dans le document
-    $("#argent").html(currentWorld.money + ' $'); //dans l'affichage
+    $("#argent").html(formatNumber(currentWorld.money) + ' $'); //dans l'affichage
 
     //Mettre à jour les managers
     currentWorld.products.product[id].managerUnlocked = true; //dans le document
@@ -514,8 +522,7 @@ function ApplicBonus(objet, product) {
 }
 
 //Acheter un upgrades
-function BuyUpgrades(id){
-    var upgrade = currentWorld.upgrades.pallier[id-1];
+function BuyUpgrades(upgrade){
     upgrade.unlocked = true;
     //Appliquer le bonus
     if (upgrade.idcible > 0) { //Si upgrade concerne un produit
@@ -525,10 +532,14 @@ function BuyUpgrades(id){
         $.each(currentWorld.products.product, function (index, product) {
             ApplicBonus(upgrade, product);
         });
+    } else { //Si l'upgrade concerne les anges
+        ApplicBonus(upgrade, null);
     }
     //Mettre à jour argent disponible
+    console.log(upgrade);
     currentWorld.money = currentWorld.money - upgrade.seuil; //dans le document
-    $("#argent").html(currentWorld.money + ' $'); //dans l'affichage
+    
+    $("#argent").html(formatNumber(currentWorld.money) + ' $'); //dans l'affichage
     // Mise à jour
     ListerUpgrades(); //de l'affichage
     InitBadgeUpgrades(); //du badge
@@ -564,18 +575,17 @@ function InitBadgeAnge() {
     });
 }
 
-function BuyAngel(n){
-    ange = $("#a"+n);
-    seuil = ange.children("seuil");
-    console.log("seuil=" + seuil);
+function BuyAngel(ange){    
     $("#angelbutton .badge").text(""); // Retirer le badge "new"
 
     //Mettre à jour les anges actifs
     currentWorld.activeangels = currentWorld.activeangels - ange.seuil;
     
     //Mettre à jour les managers
+    console.log("1" + ange.unlocked);
     ange.unlocked = true; //dans le document
     ListerAngel();  //dans l'affichage
+    console.log("2" + ange.unlocked);
     
     //Appliquer le bonus
     if (ange.idcible > 0) { //Si upgrade concerne un produit
