@@ -60,7 +60,7 @@
             <croissance>1.15</croissance>
             <revenu>60</revenu>
             <vitesse>5000</vitesse>
-            <quantite>0</quantite>
+            <quantite>1</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
             <palliers>
@@ -291,7 +291,7 @@
         <pallier>
             <name>Rigoles pas, achete !</name>
             <logo>icones/poule.jpg</logo>
-            <seuil>150000</seuil>
+            <seuil>15000</seuil>
             <idcible>1</idcible>
             <ratio>3</ratio>
             <typeratio>gain</typeratio>
