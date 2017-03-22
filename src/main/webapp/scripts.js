@@ -163,7 +163,9 @@ function StartProduction(id){
             //Lancer la bar d'avancement
             bars[product.id].animate(1, {duration: product.vitesse});
             CalcCommutateur();
-        
+            //Démarer la production coté serveur
+//            sendToServer("product", product);
+
             //Quand la production est finie
             function liftOff() {
                 //Reinitialiser
@@ -257,7 +259,10 @@ function BuyProduct(product) {
         if (product.timeleft===0){ //Si la production n'est pas en cours
         $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite));
         }
+        //Achat d'un produit coté serveur
+//      sendToServer("product", product);
     }
+    
     CalcCommutateur(); //Recaculer les prix
     GestionBuyButton(product); //Mettre à jour cliquabilité des boutons d'achat
     DebloqUnlock(); //Gerer les unlocks
@@ -388,7 +393,7 @@ function ListerUpgrades() {
     var n=1;
     $("#upgrades .modal-body").html("");
     $.each(currentWorld.upgrades.pallier, function (index, upgrade) {
-        if (upgrade.unlocked === false && n<=5) { //si l'upgrade n'est pas acheté et les 5ers
+        if (upgrade.unlocked === false && n<=6) { //si l'upgrade n'est pas acheté et les 6ers
             //Enregistrer la cible de l'upgrade
             var cible;
             if (upgrade.idcible>0){cible = currentWorld.products.product[upgrade.idcible -1].name;} 
@@ -469,7 +474,10 @@ function Hire(id) {
     if (currentWorld.products.product[id].quantite > 0){
          StartProduction(id); //Lancer la production du produit
     }
-
+    
+    //Achat du manager coté serveur
+//    sendToServer("manager", manager);
+    
     //Info bulle
     toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
     toastr.success("Manager engagé ! ");
@@ -596,4 +604,20 @@ function BuyAngel(ange){
             ApplicBonus(ange, product);
         });
     }
+}
+
+function sendToServer(type, content) {
+    $.ajax(serveurUrl + "webresources/generic/" + type, {
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify(content),
+        statusCode: {
+            304: function () {
+// Action non prise en compte
+            }
+        },
+        error: function () {
+// echec de la requête
+        }
+    });
 }

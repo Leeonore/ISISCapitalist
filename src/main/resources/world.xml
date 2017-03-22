@@ -178,7 +178,7 @@
         <product>
             <id>5</id>
             <name>Poney</name>
-            <logo>icones/poney.png</logo>
+            <logo>icones/poney.jpg</logo>
             <cout>103680</cout>
             <croissance>1.12</croissance>
             <revenu>51840</revenu>
@@ -189,7 +189,7 @@
             <palliers>
                 <pallier>
                     <name>Ja-poney</name>
-                    <logo>icones/poney.png</logo>
+                    <logo>icones/poney.jpg</logo>
                     <seuil>25</seuil>
                     <idcible>5</idcible>
                     <ratio>2</ratio>
@@ -198,7 +198,7 @@
                 </pallier>
                 <pallier>
                     <name>PoneyClub</name>
-                    <logo>icones/poney.png</logo>
+                    <logo>icones/poney.jpg</logo>
                     <seuil>50</seuil>
                     <idcible>5</idcible>
                     <ratio>2</ratio>
@@ -207,7 +207,7 @@
                 </pallier>
                 <pallier>
                     <name>AquaPoney</name>
-                    <logo>icones/poney.png</logo>
+                    <logo>icones/poney.jpg</logo>
                     <seuil>100</seuil>
                     <idcible>5</idcible>
                     <ratio>2</ratio>
@@ -218,8 +218,8 @@
         </product>
         <product>
             <id>6</id>
-            <name>Produit6</name>
-            <logo>icones/poney.png</logo>
+            <name>Ludovic</name>
+            <logo>icones/ludo.jpg</logo>
             <cout>1244160</cout>
             <croissance>1.11</croissance>
             <revenu>622080</revenu>
@@ -229,8 +229,8 @@
             <managerUnlocked>false</managerUnlocked>
             <palliers>
                 <pallier>
-                    <name>P6.Bonus1</name>
-                    <logo>icones/vache.jpg</logo>
+                    <name>Yolo</name>
+                    <logo>icones/ludo.jpg</logo>
                     <seuil>25</seuil>
                     <idcible>4</idcible>
                     <ratio>6</ratio>
@@ -238,8 +238,8 @@
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
-                    <name>P6.Bonus1</name>
-                    <logo>icones/vache.jpg</logo>
+                    <name>Grognasse</name>
+                    <logo>icones/ludo.jpg</logo>
                     <seuil>50</seuil>
                     <idcible>6</idcible>
                     <ratio>2</ratio>
@@ -247,8 +247,8 @@
                     <unlocked>false</unlocked>
                 </pallier>
                 <pallier>
-                    <name>P6.Bonus1</name>
-                    <logo>icones/vache.jpg</logo>
+                    <name>Nouille</name>
+                    <logo>icones/ludo.jpg</logo>
                     <seuil>100</seuil>
                     <idcible>6</idcible>
                     <ratio>2</ratio>
@@ -261,7 +261,7 @@
     <allunlocks>
         <pallier>
             <name>Unlock1</name>
-            <logo>icones/bonus.png</logo>
+            <logo>icones/farmland.jpg</logo>
             <seuil>25</seuil>
             <idcible>-1</idcible>
             <ratio>3</ratio>
@@ -270,7 +270,7 @@
         </pallier>
         <pallier>
             <name>Unlock2</name>
-            <logo>icones/bonus.png</logo>
+            <logo>icones/farmland.jpg</logo>
             <seuil>50</seuil>
             <idcible>-1</idcible>
             <ratio>3</ratio>
@@ -289,91 +289,91 @@
 </allunlocks>
     <upgrades>
         <pallier>
-            <name>Upgrade1</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>250000</seuil>
+            <name>Rigoles pas, achete !</name>
+            <logo>icones/poule.jpg</logo>
+            <seuil>150000</seuil>
+            <idcible>1</idcible>
+            <ratio>3</ratio>
+            <typeratio>gain</typeratio>
+            <unlocked>false</unlocked>
+        </pallier>
+        <pallier>
+            <name>Coin coin...</name>
+            <logo>icones/canard.jpg</logo>
+            <seuil>100000</seuil>
+            <idcible>2</idcible>
+            <ratio>3</ratio>
+            <typeratio>gain</typeratio>
+            <unlocked>false</unlocked>
+        </pallier>
+        <pallier>
+            <name>Pas mal !</name>
+            <logo>icones/cochon.jpg</logo>
+            <seuil>200000</seuil>
             <idcible>3</idcible>
             <ratio>3</ratio>
             <typeratio>gain</typeratio>
             <unlocked>false</unlocked>
         </pallier>
         <pallier>
-            <name>Upgrade2</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>500000</seuil>
-            <idcible>2</idcible>
-            <ratio>3</ratio>
-            <typeratio>gain</typeratio>
-            <unlocked>false</unlocked>
-        </pallier>
-        <pallier>
-            <name>Upgrade3</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>1000000</seuil>
-            <idcible>-1</idcible>
-            <ratio>3</ratio>
-            <typeratio>vitesse</typeratio>
-            <unlocked>false</unlocked>
-        </pallier>
-        <pallier>
-            <name>Upgrade4</name>
-            <logo>icones/upgrade.png</logo>
+            <name>Je le veau bien!</name>
+            <logo>icones/vache.jpg</logo>
             <seuil>2000000</seuil>
-            <idcible>1</idcible>
-            <ratio>2</ratio>
+            <idcible>3</idcible>
+            <ratio>3</ratio>
             <typeratio>gain</typeratio>
             <unlocked>false</unlocked>
         </pallier>
         <pallier>
-            <name>Upgrade5</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>4000000</seuil>
-            <idcible>0</idcible>
-            <ratio>2</ratio>
+            <name>Ah dada</name>
+            <logo>icones/poney.jpg</logo>
+            <seuil>3000000</seuil>
+            <idcible>5</idcible>
+            <ratio>3</ratio>
             <typeratio>gain</typeratio>
             <unlocked>false</unlocked>
         </pallier>
         <pallier>
-            <name>Upgrade6</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>8000000</seuil>
-            <idcible>1</idcible>
-            <ratio>2</ratio>
+            <name>Ca aide !?</name>
+            <logo>icones/ludo.jpg</logo>
+            <seuil>3500000</seuil>
+            <idcible>6</idcible>
+            <ratio>3</ratio>
             <typeratio>vitesse</typeratio>
             <unlocked>false</unlocked>
         </pallier>
         <pallier>
-            <name>Upgrade7</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>16000000</seuil>
+            <name>Pour la famille</name>
+            <logo>icones/farmland.jpg</logo>
+            <seuil>5000000</seuil>
+            <idcible>0</idcible>
+            <ratio>3</ratio>
+            <typeratio>gain</typeratio>
+            <unlocked>false</unlocked>
+        </pallier>
+        <pallier>
+            <name>Oh, un ange!</name>
+            <logo>icones/ange.jpg</logo>
+            <seuil>7000000</seuil>
+            <idcible>-1</idcible>
+            <ratio>2</ratio>
+            <typeratio>angel</typeratio>
+            <unlocked>false</unlocked>
+        </pallier>
+        <pallier>
+            <name>Et le coq ?</name>
+            <logo>icones/poule.jpg</logo>
+            <seuil>10000000</seuil>
+            <idcible>1</idcible>
+            <ratio>2</ratio>
+            <typeratio>gain</typeratio>
+            <unlocked>false</unlocked>
+        </pallier>
+        <pallier>
+            <name>Petit coup de pouce</name>
+            <logo>icones/canard.jpg</logo>
+            <seuil>10500000</seuil>
             <idcible>2</idcible>
-            <ratio>2</ratio>
-            <typeratio>gain</typeratio>
-            <unlocked>false</unlocked>
-        </pallier>
-        <pallier>
-            <name>Upgrade8</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>32000000</seuil>
-            <idcible>1</idcible>
-            <ratio>2</ratio>
-            <typeratio>gain</typeratio>
-            <unlocked>false</unlocked>
-        </pallier>
-        <pallier>
-            <name>Upgrade9</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>64000000</seuil>
-            <idcible>1</idcible>
-            <ratio>2</ratio>
-            <typeratio>gain</typeratio>
-            <unlocked>false</unlocked>
-        </pallier>
-        <pallier>
-            <name>Upgrade10</name>
-            <logo>icones/upgrade.png</logo>
-            <seuil>128000000</seuil>
-            <idcible>1</idcible>
             <ratio>2</ratio>
             <typeratio>gain</typeratio>
             <unlocked>false</unlocked>
