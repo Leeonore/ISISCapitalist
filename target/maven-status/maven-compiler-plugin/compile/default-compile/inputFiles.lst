@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\src\main\java\isiscapitalist\GenericResource.java
 C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\ObjectFactory.java
 C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\src\main\java\isiscapitalist\ApplicationConfig.java
@@ -8,3 +9,15 @@ C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabi
 C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\PalliersType.java
 C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\TyperatioType.java
 C:\Users\lgrandgu\Documents\4A\S2\Architecture orientee service SOA\Interoperabilite\Projet\ISISCapitalist\target\generated-sources\xjc\generated\ProductType.java
+=======
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\src\main\java\isiscapitalist\GenericResource.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\target\generated-sources\xjc\generated\ObjectFactory.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\target\generated-sources\xjc\generated\ProductType.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\src\main\java\isiscapitalist\ApplicationConfig.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\target\generated-sources\xjc\generated\World.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\src\main\java\isiscapitalist\Services.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\target\generated-sources\xjc\generated\PalliersType.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\target\generated-sources\xjc\generated\PallierType.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\target\generated-sources\xjc\generated\TyperatioType.java
+C:\Users\alex\Documents\NetBeansProjects\ISISCapitalist\target\generated-sources\xjc\generated\ProductsType.java
+>>>>>>> 78d4b0557431cdc1989a20d49966f23607db6a7b

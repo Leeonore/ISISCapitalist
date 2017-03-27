@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(isiscapitalist.GenericResource.class);
+        resources.add(isiscapitalist.GenericResource_1.class);
     }
     
 }

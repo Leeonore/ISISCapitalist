@@ -43,7 +43,7 @@ public class ServicesTest {
     /**
      * Test of readWorldFromXml method, of class Services.
      */
-    @org.junit.Test
+   /* @org.junit.Test
     public void testReadWorldFromXml() throws Exception {
         System.out.println("readWorldFromXml");
         Services instance = new Services();
@@ -53,12 +53,12 @@ public class ServicesTest {
         assertNotEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
-    }
+    }*/
 
     /**
      * Test of saveWorldToXML method, of class Services.
      */
-    @org.junit.Test
+    /*@org.junit.Test
     public void testSaveWorldToXML() throws Exception {
         System.out.println("saveWorldToXML");
         World world = null;
@@ -66,6 +66,6 @@ public class ServicesTest {
         instance.saveWorldToXML(world, "");
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
-    }
+    }*/
     
 }
