@@ -61,8 +61,8 @@
     /*Présentation gauche du produit : image / quantité */
     img {
         width : 100%;
+        /*cursor:pointer;*/
         }
-
     .quantite {
         width: 100%;
         z-index: 10;

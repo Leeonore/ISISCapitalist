@@ -104,6 +104,10 @@ public class GenericResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public void product(@Context HttpServletRequest request, String content) throws JAXBException, FileNotFoundException {
         ProductType product = new Gson().fromJson(content, ProductType.class);
+<<<<<<< HEAD
+=======
+        System.out.println(product.getTimeleft());
+>>>>>>> 207a31be50726d4fbceb3283ce88297909050dd6
         String username = request.getHeader("X-user");
         service.updateProduct(username, product);
     }

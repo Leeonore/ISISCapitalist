@@ -7,22 +7,11 @@
 
 //Initialisation interface
 $(document).ready(function () {
-    ////////////////////////////////////////////////////////////////////////////////
+    
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Initialisation joueur //////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-        var username;
-        if (localStorage.getItem("username") !== null) {
-            username = localStorage.getItem("username");
-            $('#TextUser').val(username); 
-        }
-            $("#TextUser").change(function () {
-                var username = $(this).val();
-                localStorage.setItem("username", username);
-            });
-            console.log(username);
-        $.ajaxSetup({
-            headers: {"X-user": username}
-        });
+        username();
 
     $.getJSON(serveurUrl + "webresources/generic/World", function (world) {
 
@@ -99,11 +88,25 @@ $(document).ready(function () {
         // Gestion clique logo
             $(".logoProduit").click(function () {
                 id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
+                product = currentWorld.products.product[id];
                 //Lancer la production si elle n'est pas en cours
-                if (currentWorld.products.product[id].timeleft === 0) {
+                if ((product.timeleft === 0) && (product.quantite>0)) {
                     StartProduction(id);
                 }
             });
+        
+        //Gestion du curseur sur les logo
+        
+            
+            $(".logoProduit").mouseover(function (){
+                id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
+                if (currentWorld.products.product[id].quantite>0){
+                 document.body.style.cursor = 'pointer';
+             }
+             });
+            $(".logoProduit").mouseout(function (){
+                 document.body.style.cursor = 'auto';
+             });
     });
 
     //Gestion clique du commutateur
@@ -185,7 +188,9 @@ setInterval(function () {
                     $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite));
                 }
                 //Achat d'un produit coté serveur
-        //      sendToServer("product", product);
+                
+            console.log(product.cout);
+                sendToServer("product", product);
             }
 
             CalcCommutateur(); //Recaculer les prix
@@ -198,22 +203,20 @@ setInterval(function () {
             var product = currentWorld.products.product[id];
             product.timeleft = product.vitesse; //Mettre à jour le temps restant
             product.lastupdate = Date.now(); //Enregistrer la date du lancement
-
-            if (currentWorld.products.product[id].quantite > 0) { //si on peut produire
-                quantiteProd[id] = currentWorld.products.product[id].quantite; //on enregistre la quantité en production
-                //Lancer la minuterie
-                $("#p" + product.id + " .time").countdown({until: +(product.timeleft / 1000), compact: true, onExpiry: liftOff});
-                //Lancer la bar d'avancement
-                bars[product.id].animate(1, {duration: product.vitesse});
-                CalcCommutateur();
-                //Démarer la production coté serveur
-        //            sendToServer("product", product);
-
-                //Quand la production est finie
-                function liftOff() {
-                    EndProduction(product);
-                }
+            //Gestion de la production coté client
+            quantiteProd[id] = currentWorld.products.product[id].quantite; //on enregistre la quantité en production
+            //Lancer la minuterie
+            $("#p" + product.id + " .time").countdown({until: +(product.timeleft / 1000), compact: true, onExpiry: liftOff});
+            //Lancer la bar d'avancement
+            bars[product.id].animate(1, {duration: product.vitesse});
+            CalcCommutateur();
+            //Démarer la production coté serveur
+            sendToServer("product", product);
+            //Quand la production est finie
+            function liftOff() {
+                EndProduction(product);
             }
+            
         }
 
     //Enregistrer la fin de production
@@ -247,7 +250,7 @@ setInterval(function () {
             //else {
                 //product.timeleft = product.timeleft -(Date.now() - product.lastupdate); //Mettre à jour le temps restant
                 //Si la produciton est finie
-                if (product.timeleft < 0){
+                if (product.timeleft === -1){
                     //Reinitialiser
                     product.timeleft = 0; 
                     //Mettre à jour l'argent disponible
@@ -261,8 +264,9 @@ setInterval(function () {
             GestionBuyButton(product); 
         });  
     }
+    
     // Calcul cout des produits
-        function calculCout(cout, croissance, n) {
+        function calculCout(cout, croissance,n) {
             if (n === 0) {
                 return 0;
             } else {
@@ -612,7 +616,7 @@ setInterval(function () {
             }
 
             //Achat du manager coté serveur
-        //    sendToServer("manager", manager);
+            sendToServer("manager", manager);
 
             //Info bulle
             toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
@@ -633,34 +637,58 @@ setInterval(function () {
         
     //Application des bonus débloqués ou acheté
         function ApplicBonus(objet, product) {
-            if (objet.typeratio === 'GAIN') {
-                product.revenu = product.revenu * objet.ratio;
-                $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //Mettre à jour l'affichage
-            } else if (objet.typeratio === 'VITESSE') {
-                //Mettre à jour les valeurs
-                product.vitesse = product.vitesse / objet.ratio; //la vitesse de production
-                product.timeleft = product.timeleft / objet.ratio; //le temps restant
-
-                //Adapter affichage
-                //La barre de progression
-                bars[product.id].animate(1, {duration: product.timeleft});
-                //Adapter le miniteur
-                $("#p" + product.id + " .time").attr("class", "time");
-                $("#p" + product.id + " .time").countdown({until: +(product.timeleft / 1000), compact: true, onExpiry: liftOff});
-                function liftOff() {
-                    EndProduction(product);
+            //Si type gain
+                if (objet.typeratio === 'GAIN') { 
+                    //Mettre à jour le revenu
+                    product.revenu = product.revenu * objet.ratio; //Dans le xml
+                    $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //dans l'affichage
+            //Si type vitesse
+                } else if (objet.typeratio === 'VITESSE') {
+                    //Mettre à jour la vitesse et le timeleft
+                        product.vitesse = product.vitesse / objet.ratio; //la vitesse de production
+                        product.timeleft = product.timeleft / objet.ratio; //le temps restant
+                    //Adapter affichage
+                        //La barre de progression
+                        bars[product.id].animate(1, {duration: product.timeleft});
+                        //Adapter le miniteur
+                        $("#p" + product.id + " .time").attr("class", "time");
+                        $("#p" + product.id + " .time").countdown({until: +(product.timeleft / 1000), compact: true, onExpiry: liftOff});
+                        function liftOff() {
+                            EndProduction(product);
+                        }
+            // Si type ange
+                } else {
+                    if (currentWorld.activeangels > 0) { //si il y a des anges actifs
+                        //On met à jour l'angel bonus
+                        currentWorld.angelbonus = currentWorld.angelbonus + objet.ratio * currentWorld.activeangels;                        
+                    }
                 }
-            } else { //Pour les bonus de type 'ANGE')
-                if (currentWorld.activeangels > 0) { //si il y a des anges actifs
-                    currentWorld.angelbonus = currentWorld.angelbonus + objet.ratio * currentWorld.activeangels;
-                }
-            }
         }
         
 ////////////////////////////////////////////////////////////////////////////////        
 ///////////////////////////// Fonctions supports ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
+    //Gestion du nom d'utilisateur :
+        function username(){
+    var username;
+        if (localStorage.getItem("username") !== "") { //Si il y a un username
+            username = localStorage.getItem("username");
+            $('#TextUser').val(username); //On l'affiche dans la zone de texte
+        }else { //Si il n'y a pas d'username
+            username = "Poney" + Math.floor(Math.random() * 10000); //On en crée un au hazard
+            localStorage.setItem("username", username); //On l'affiche dans la zone de texte
+        }
+        $("#TextUser").change(function () { //Si on change l'username
+                var username = $(this).val(); //On récupère le nom
+                localStorage.setItem("username", username); //on l'enregistre
+                window.location.reload(); //on recharge le monde
+            });
+        //On l'ajoute à l'entête pour la communication avec le seveur
+        $.ajaxSetup({
+            headers: {"X-user": username}
+        });
+    }
+    
     //Formater les nombres (virgules, puissances etc)
         function formatNumber(number) {
             if (number < 1000)
@@ -683,10 +711,12 @@ setInterval(function () {
                 statusCode: {
                     304: function () {
         // Action non prise en compte
+        console.error("L'action n'a pas été prise en compte");
                     }
                 },
                 error: function () {
         // echec de la requête
+        console.error("La requête a échouée");
                 }
             });
         }
