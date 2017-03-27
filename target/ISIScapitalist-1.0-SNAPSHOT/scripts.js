@@ -88,11 +88,25 @@ $(document).ready(function () {
         // Gestion clique logo
             $(".logoProduit").click(function () {
                 id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
+                product = currentWorld.products.product[id];
                 //Lancer la production si elle n'est pas en cours
-                if (currentWorld.products.product[id].timeleft === 0) {
+                if ((product.timeleft === 0) && (product.quantite>0)) {
                     StartProduction(id);
                 }
             });
+        
+        //Gestion du curseur sur les logo
+        
+            
+            $(".logoProduit").mouseover(function (){
+                id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
+                if (currentWorld.products.product[id].quantite>0){
+                 document.body.style.cursor = 'pointer';
+             }
+             });
+            $(".logoProduit").mouseout(function (){
+                 document.body.style.cursor = 'auto';
+             });
     });
 
     //Gestion clique du commutateur
@@ -249,6 +263,7 @@ setInterval(function () {
             GestionBuyButton(product); 
         });  
     }
+    
     // Calcul cout des produits
         function calculCout(cout, croissance, n) {
             if (n === 0) {
@@ -621,47 +636,53 @@ setInterval(function () {
         
     //Application des bonus débloqués ou acheté
         function ApplicBonus(objet, product) {
-            if (objet.typeratio === 'GAIN') {
-                product.revenu = product.revenu * objet.ratio;
-                $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //Mettre à jour l'affichage
-            } else if (objet.typeratio === 'VITESSE') {
-                //Mettre à jour les valeurs
-                product.vitesse = product.vitesse / objet.ratio; //la vitesse de production
-                product.timeleft = product.timeleft / objet.ratio; //le temps restant
-
-                //Adapter affichage
-                //La barre de progression
-                bars[product.id].animate(1, {duration: product.timeleft});
-                //Adapter le miniteur
-                $("#p" + product.id + " .time").attr("class", "time");
-                $("#p" + product.id + " .time").countdown({until: +(product.timeleft / 1000), compact: true, onExpiry: liftOff});
-                function liftOff() {
-                    EndProduction(product);
+            //Si type gain
+                if (objet.typeratio === 'GAIN') { 
+                    //Mettre à jour le revenu
+                    product.revenu = product.revenu * objet.ratio; //Dans le xml
+                    $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //dans l'affichage
+            //Si type vitesse
+                } else if (objet.typeratio === 'VITESSE') {
+                    //Mettre à jour la vitesse et le timeleft
+                        product.vitesse = product.vitesse / objet.ratio; //la vitesse de production
+                        product.timeleft = product.timeleft / objet.ratio; //le temps restant
+                    //Adapter affichage
+                        //La barre de progression
+                        bars[product.id].animate(1, {duration: product.timeleft});
+                        //Adapter le miniteur
+                        $("#p" + product.id + " .time").attr("class", "time");
+                        $("#p" + product.id + " .time").countdown({until: +(product.timeleft / 1000), compact: true, onExpiry: liftOff});
+                        function liftOff() {
+                            EndProduction(product);
+                        }
+            // Si type ange
+                } else {
+                    if (currentWorld.activeangels > 0) { //si il y a des anges actifs
+                        //On met à jour l'angel bonus
+                        currentWorld.angelbonus = currentWorld.angelbonus + objet.ratio * currentWorld.activeangels;                        
+                    }
                 }
-            } else { //Pour les bonus de type 'ANGE')
-                if (currentWorld.activeangels > 0) { //si il y a des anges actifs
-                    currentWorld.angelbonus = currentWorld.angelbonus + objet.ratio * currentWorld.activeangels;
-                }
-            }
         }
         
 ////////////////////////////////////////////////////////////////////////////////        
 ///////////////////////////// Fonctions supports ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
     //Gestion du nom d'utilisateur :
-    function username(){
+        function username(){
     var username;
-        if (localStorage.getItem("username") !== null) {
+        if (localStorage.getItem("username") !== "") { //Si il y a un username
             username = localStorage.getItem("username");
-            $('#TextUser').val(username); 
-        }else {
-            username = "Poney" + Math.floor(Math.random() * 10000);
+            $('#TextUser').val(username); //On l'affiche dans la zone de texte
+        }else { //Si il n'y a pas d'username
+            username = "Poney" + Math.floor(Math.random() * 10000); //On en crée un au hazard
+            localStorage.setItem("username", username); //On l'affiche dans la zone de texte
         }
-        $("#TextUser").change(function () {
-                var username = $(this).val();
-                localStorage.setItem("username", username);
-                window.location.reload();
+        $("#TextUser").change(function () { //Si on change l'username
+                var username = $(this).val(); //On récupère le nom
+                localStorage.setItem("username", username); //on l'enregistre
+                window.location.reload(); //on recharge le monde
             });
+        //On l'ajoute à l'entête pour la communication avec le seveur
         $.ajaxSetup({
             headers: {"X-user": username}
         });
@@ -682,7 +703,6 @@ setInterval(function () {
 
     //Envoyer les infos au serveurs
         function sendToServer(type, content) {
-            console.log(type);
             $.ajax(serveurUrl + "webresources/generic/" + type, {
                 type: "PUT",
                 contentType: "application/json",
@@ -690,10 +710,12 @@ setInterval(function () {
                 statusCode: {
                     304: function () {
         // Action non prise en compte
+        console.error("L'action n'a pas été prise en compte");
                     }
                 },
                 error: function () {
         // echec de la requête
+        console.error("La requête a échouée");
                 }
             });
         }
