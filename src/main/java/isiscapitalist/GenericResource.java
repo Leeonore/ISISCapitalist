@@ -89,7 +89,10 @@ public class GenericResource {
 
     /**
      * PUT method for updating or creating an instance of GenericResource
+     * @param request
      * @param content representation for the resource
+     * @throws javax.xml.bind.JAXBException
+     * @throws java.io.FileNotFoundException
      */
     /*@PUT
     @Consumes(MediaType.APPLICATION_XML)
@@ -99,15 +102,18 @@ public class GenericResource {
     @PUT
     @Path("/product")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void product(String content) throws JAXBException, FileNotFoundException {
+    public void product(@Context HttpServletRequest request, String content) throws JAXBException, FileNotFoundException {
         ProductType product = new Gson().fromJson(content, ProductType.class);
-        service.updateProduct("toto", product);
+        String username = request.getHeader("X-user");
+        service.updateProduct(username, product);
     }
     
-    /*@PUT
+    @PUT
     @Path("/manager")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void pallier(String content){
+    public void pallier(@Context HttpServletRequest request, String content) throws JAXBException, FileNotFoundException{
         PallierType pallier = new Gson().fromJson(content, PallierType.class);
-    }*/
+        String username = request.getHeader("X-user");
+        service.updateManager(username, pallier);
+    }
 }   
