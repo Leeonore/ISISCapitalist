@@ -238,7 +238,6 @@ setInterval(function () {
                     var gain = product.revenu*quantiteProd[product.id-1] *( 1 + currentWorld.activeangels * currentWorld.angelbonus/100);
                     currentWorld.score = currentWorld.score + (gain); //dans le score
                     currentWorld.money = currentWorld.money + (gain); //dans le document
-
                     $("#argent").html(formatNumber(currentWorld.money) + ' $'); //à l'affichage
                 }
            // }
