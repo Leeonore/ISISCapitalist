@@ -24,12 +24,11 @@
     margin-top: 17%;
 }
 
-#joueur {
+#username {
     margin-top: -17px;
 }
-textArea {
+#TextUser {
     height: 25px;
-    margin-top: -50px;
     font-size: initial;
     font-weight: initial;
 }
