@@ -10,19 +10,7 @@ $(document).ready(function () {
     ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Initialisation joueur //////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-        var username;
-        if (localStorage.getItem("username") !== null) {
-            username = localStorage.getItem("username");
-            $('#TextUser').val(username); 
-        }
-            $("#TextUser").change(function () {
-                var username = $(this).val();
-                localStorage.setItem("username", username);
-            });
-            console.log(username);
-        $.ajaxSetup({
-            headers: {"X-user": username}
-        });
+        username();
 
     $.getJSON(serveurUrl + "webresources/generic/World", function (world) {
 
@@ -185,7 +173,7 @@ setInterval(function () {
                     $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite));
                 }
                 //Achat d'un produit coté serveur
-        //      sendToServer("product", product);
+                sendToServer("product", product);
             }
 
             CalcCommutateur(); //Recaculer les prix
@@ -247,7 +235,7 @@ setInterval(function () {
             //else {
                 //product.timeleft = product.timeleft -(Date.now() - product.lastupdate); //Mettre à jour le temps restant
                 //Si la produciton est finie
-                if (product.timeleft < 0){
+                if (product.timeleft === -1){
                     //Reinitialiser
                     product.timeleft = 0; 
                     //Mettre à jour l'argent disponible
@@ -660,7 +648,25 @@ setInterval(function () {
 ////////////////////////////////////////////////////////////////////////////////        
 ///////////////////////////// Fonctions supports ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
+    //Gestion du nom d'utilisateur :
+    function username(){
+    var username;
+        if (localStorage.getItem("username") !== null) {
+            username = localStorage.getItem("username");
+            $('#TextUser').val(username); 
+        }else {
+            username = "Poney" + Math.floor(Math.random() * 10000);
+        }
+        $("#TextUser").change(function () {
+                var username = $(this).val();
+                localStorage.setItem("username", username);
+                window.location.reload();
+            });
+        $.ajaxSetup({
+            headers: {"X-user": username}
+        });
+    }
+    
     //Formater les nombres (virgules, puissances etc)
         function formatNumber(number) {
             if (number < 1000)
@@ -676,6 +682,7 @@ setInterval(function () {
 
     //Envoyer les infos au serveurs
         function sendToServer(type, content) {
+            console.log(type);
             $.ajax(serveurUrl + "webresources/generic/" + type, {
                 type: "PUT",
                 contentType: "application/json",
