@@ -188,6 +188,8 @@ setInterval(function () {
                     $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite));
                 }
                 //Achat d'un produit coté serveur
+                
+            console.log(product.cout);
                 sendToServer("product", product);
             }
 
@@ -208,7 +210,6 @@ setInterval(function () {
             //Lancer la bar d'avancement
             bars[product.id].animate(1, {duration: product.vitesse});
             CalcCommutateur();
-            
             //Démarer la production coté serveur
             sendToServer("product", product);
             //Quand la production est finie
@@ -265,7 +266,7 @@ setInterval(function () {
     }
     
     // Calcul cout des produits
-        function calculCout(cout, croissance, n) {
+        function calculCout(cout, croissance,n) {
             if (n === 0) {
                 return 0;
             } else {
