@@ -7,7 +7,8 @@
 
 //Initialisation interface
 $(document).ready(function () {
-    ////////////////////////////////////////////////////////////////////////////////
+    
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Initialisation joueur //////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
         username();
@@ -186,22 +187,21 @@ setInterval(function () {
             var product = currentWorld.products.product[id];
             product.timeleft = product.vitesse; //Mettre à jour le temps restant
             product.lastupdate = Date.now(); //Enregistrer la date du lancement
-
-            if (currentWorld.products.product[id].quantite > 0) { //si on peut produire
-                quantiteProd[id] = currentWorld.products.product[id].quantite; //on enregistre la quantité en production
-                //Lancer la minuterie
-                $("#p" + product.id + " .time").countdown({until: +(product.timeleft / 1000), compact: true, onExpiry: liftOff});
-                //Lancer la bar d'avancement
-                bars[product.id].animate(1, {duration: product.vitesse});
-                CalcCommutateur();
-                //Démarer la production coté serveur
-        //            sendToServer("product", product);
-
-                //Quand la production est finie
-                function liftOff() {
-                    EndProduction(product);
-                }
+            //Gestion de la production coté client
+            quantiteProd[id] = currentWorld.products.product[id].quantite; //on enregistre la quantité en production
+            //Lancer la minuterie
+            $("#p" + product.id + " .time").countdown({until: +(product.timeleft / 1000), compact: true, onExpiry: liftOff});
+            //Lancer la bar d'avancement
+            bars[product.id].animate(1, {duration: product.vitesse});
+            CalcCommutateur();
+            
+            //Démarer la production coté serveur
+            sendToServer("product", product);
+            //Quand la production est finie
+            function liftOff() {
+                EndProduction(product);
             }
+            
         }
 
     //Enregistrer la fin de production
@@ -600,7 +600,7 @@ setInterval(function () {
             }
 
             //Achat du manager coté serveur
-        //    sendToServer("manager", manager);
+            sendToServer("manager", manager);
 
             //Info bulle
             toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
