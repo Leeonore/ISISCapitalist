@@ -7,7 +7,26 @@
 
 //Initialisation interface
 $(document).ready(function () {
-    $.getJSON(serveurUrl + "webresources/generic", function (world) {
+    ////////////////////////////////////////////////////////////////////////////////
+/////////////////////////// Initialisation joueur //////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+        var username;
+        if (localStorage.getItem("username") !== null) {
+            username = localStorage.getItem("username");
+            $('#TextUser').val(username); 
+        }
+            $("#TextUser").change(function () {
+                var username = $(this).val();
+                localStorage.setItem("username", username);
+            });
+            console.log(username);
+        $.ajaxSetup({
+            headers: {"X-user": username}
+        });
+
+    $.getJSON(serveurUrl + "webresources/generic/World", function (world) {
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// Initialisation du monde //////////////////////////
@@ -44,9 +63,7 @@ $(document).ready(function () {
             }else{
                 $("#produits2").append(newProduct);
             }
-          
-
-
+            
             // Gestion clique achat produit
                 $("#p" + product.id + " .btn").click(function () {
                     var id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
@@ -68,7 +85,7 @@ $(document).ready(function () {
                         EndProduction(product);
                     }
                 }
-        });
+        });        
 
         // Initialisation du commutateur
             commutateur = 1;
@@ -140,7 +157,6 @@ setInterval(function () {
     $.each(currentWorld.products.product, function (index, product) {
         if (product.timeleft > 0) {
             product.timeleft = product.timeleft - (Date.now() - product.lastupdate); //Mettre à jour le temps restant
-            console.log(product.timeleft);
         }
     });
 }, 100);
@@ -548,7 +564,6 @@ setInterval(function () {
                 ApplicBonus(upgrade, null);
             }
             //Mettre à jour argent disponible
-            console.log(upgrade);
             currentWorld.money = currentWorld.money - upgrade.seuil; //dans le document
 
             $("#argent").html(formatNumber(currentWorld.money) + ' $'); //dans l'affichage
@@ -565,10 +580,8 @@ setInterval(function () {
             currentWorld.activeangels = currentWorld.activeangels - ange.seuil;
 
             //Mettre à jour les managers
-            console.log("1" + ange.unlocked);
             ange.unlocked = true; //dans le document
             ListerAngel();  //dans l'affichage
-            console.log("2" + ange.unlocked);
 
             //Appliquer le bonus
             if (ange.idcible > 0) { //Si upgrade concerne un produit

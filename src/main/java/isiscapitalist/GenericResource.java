@@ -67,18 +67,22 @@ public class GenericResource {
     @GET
     @Path("/World")
     @Produces(MediaType.APPLICATION_XML)
-    public World getXml(@Context HttpServletRequest request) throws JAXBException {
+    public World getXml(@Context HttpServletRequest request) throws JAXBException, FileNotFoundException {
         String username = request.getHeader("X-user");
-        World world = service.readWorldFromXml("toto");
+        System.out.println("nom" + username);
+        World world = service.readWorldFromXml(username);
+        service.saveWorldToXML(world,username);
         return(world);
     }
     
     @GET
     @Path("/World")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJson(@Context HttpServletRequest request) throws JAXBException {
+    public String getJson(@Context HttpServletRequest request) throws JAXBException, FileNotFoundException {
         String username = request.getHeader("X-user");
-        World world = service.readWorldFromXml("toto");
+        System.out.println("nom" + username);
+        World world = service.readWorldFromXml(username);
+        service.saveWorldToXML(world,username);
         return(new Gson().toJson(world));
         
     }
