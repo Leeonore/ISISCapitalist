@@ -74,6 +74,10 @@ $(document).ready(function () {
                         EndProduction(product);
                     }
                 }
+                //Demarer production produit managé si actualisation pile à la fin de production
+                if ((product.managerUnlocked === true) && (product.quantite>0) && (product.timeleft <= 0)) {
+                    StartProduction(product.id -1); 
+                }
         });        
 
         // Initialisation du commutateur
