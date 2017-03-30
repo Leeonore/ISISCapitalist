@@ -652,6 +652,7 @@ setInterval(function () {
                         product.vitesse = product.vitesse / objet.ratio; //la vitesse de production
                         product.timeleft = product.timeleft / objet.ratio; //le temps restant
                     //Adapter affichage
+                    if (product.timeleft >0) {
                         //La barre de progression
                         bars[product.id].animate(1, {duration: product.timeleft});
                         //Adapter le miniteur
@@ -660,6 +661,7 @@ setInterval(function () {
                         function liftOff() {
                             EndProduction(product);
                         }
+                    }
             // Si type ange
                 } else {
                     if (currentWorld.activeangels > 0) { //si il y a des anges actifs
