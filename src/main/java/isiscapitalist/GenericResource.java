@@ -117,4 +117,21 @@ public class GenericResource {
         String username = request.getHeader("X-user");
         service.updateManager(username, pallier);
     }
+    @PUT
+    @Path("/upgrade")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void upgrade(@Context HttpServletRequest request, String content) throws JAXBException, FileNotFoundException{
+        PallierType upgrade = new Gson().fromJson(content, PallierType.class);
+        String username = request.getHeader("X-user");
+        service.updateManager(username, upgrade);
+    }
+    
+    @PUT
+    @Path("/reset")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void Reset(@Context HttpServletRequest request, String content) throws JAXBException, FileNotFoundException{
+        String username = request.getHeader("X-user");
+        World world = service.readWorldFromXml(username);
+        service.ResetWorld(username, world);
+    }
 }   

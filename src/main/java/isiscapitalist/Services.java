@@ -131,6 +131,8 @@ public class Services {
             return false;
         }
         int qtchange = newproduct.getQuantite() - product.getQuantite(); // calculer la variation de quantité.
+
+        //Gestion de l'achat
         if (qtchange > 0) {// Si elle est positive, le joueur a acheté une certaine quantité
             if (product.getTimeleft() == 0) { //Si le produit n'est pas en cours de production
                 // soustraire de l'argent du joueur le cout de la quantité
@@ -141,13 +143,40 @@ public class Services {
             } else { // si le produit est en production
                 quantiteAttente.set(product.getId() - 1, qtchange + product.getQuantite()); //stocker la quantité
             }
-            List<PallierType> unlocks = product.getPalliers().getPallier();
-                for (PallierType unlock : unlocks) {
-                    if (unlock.getSeuil() <= (product.getQuantite() + qtchange) && unlock.isUnlocked() ==false) {
+
+            //Regarder si un pallier général est atteint
+            PallierType UnlocksAll = null;
+            int nP = 0; //compteur du nb de produit qui ont atteint le seuil
+            boolean premier = true;
+            List<PallierType> unlocksAllProducts = world.getAllunlocks().getPallier();
+            double seuilUnlock = unlocksAllProducts.get(0).getSeuil(); // Initialisation du seuil
+            // Boucle sur les unlocks de tous les produits
+            for (PallierType unlock : unlocksAllProducts) {
+                if (unlock.isUnlocked() == false && premier) { //Regarder si le seuil du premier pallier bloqué est atteint
+                    premier = false;
+                    seuilUnlock = unlock.getSeuil(); //Va permettre de regarder si les produit ont atteint ce seuil
+                    UnlocksAll = unlock; //Stock le premier unlock atteind
+                }
+            };
+            // Regarder si un pallier est atteint pour un produit
+            List<ProductType> products = world.getProducts().getProduct(); //liste des produits
+            for (ProductType productUnlock : products) {
+                if ((productUnlock.getQuantite()) >= seuilUnlock) { //Si le produit a atteint le seuil général
+                    nP = nP + 1; //Compte le nombre de produit qui ont atteint le seuil
+                }
+                List<PallierType> Unlocks = product.getPalliers().getPallier();
+                for (PallierType unlock : Unlocks) {
+                    if (unlock.getSeuil() <= (product.getQuantite()+ qtchange) && unlock.isUnlocked() == false) { // si on a atteint le pallier et qu'il n'est pas débloqué
                         unlock.setUnlocked(true);
                         UpdateUnlock(product, unlock);
                     }
                 };
+            };
+            if (nP == 6) {//Si tous les produits ont atteint un seuil général
+                for (ProductType productAllUnlock : products) {// On boucle sur les produits {
+                    UpdateUnlock(productAllUnlock, UnlocksAll); //On applique le bonus à tous les produits
+                };
+            }
         } else {// sinon c’est qu’il s’agit d’un lancement de production.
             product.setTimeleft(newproduct.getVitesse()); // initialiser product.timeleft à product.vitesse
             //world.setLastupdate(System.currentTimeMillis()); //Enregistrer la date
@@ -206,6 +235,10 @@ public class Services {
         world.setLastupdate(System.currentTimeMillis()); //Enregistrer la date de la derniere mise à jour
     }
 
+    /**Calculer le score après production
+     * @param product
+     * @param duree
+     */
     public void CalculScore(ProductType product, long duree) {
         if (product.getTimeleft() == 0) {
         }//Si la production n'est pas en cours
@@ -214,7 +247,7 @@ public class Services {
             product.setTimeleft(product.getTimeleft() - duree); //Mettre à jour le timeleft
             if (product.getTimeleft() <= 0) { //Si la production est finie
                 product.setTimeleft(0); //Remettre le timeleft à 0
-                world.setMoney(world.getMoney() + (product.getRevenu() * product.getQuantite())); //Mettre à jour money
+                world.setMoney(world.getMoney() + (product.getRevenu() * product.getQuantite()*(1+world.getActiveangels()*world.getAngelbonus()/100))); //Mettre à jour money
                 product.setQuantite(product.getQuantite() + quantiteAttente.get(product.getId() - 1)); //Mettre à jour quantité si achat pendant production
                 quantiteAttente.set(product.getId() - 1, 0); //réinitialiser
             } else if (product.getTimeleft() != 0) { //Si la production est en cours
@@ -224,6 +257,10 @@ public class Services {
         }
     }
 
+    /**Appliquer les Unlocks si ils se débloquent
+     * @param product
+     * @param objet
+     */
     public void UpdateUnlock(ProductType product, PallierType objet) {
         //Si type gain
         if (objet.getTyperatio().value().equals("gain")) {
@@ -235,11 +272,54 @@ public class Services {
             product.setVitesse(product.getVitesse() / (int) objet.getRatio()); //la vitesse de production
             product.setTimeleft(product.getTimeleft() / (int) objet.getRatio()); //le temps restant
             // Si type ange
-        } else {
-            if (world.getActiveangels() > 0) { //si il y a des anges actifs
-                //On met à jour l'angel bonus
-                world.setAngelbonus(world.getAngelbonus() + (int) objet.getRatio() * (int) world.getActiveangels());
-            }
+        } else if (world.getActiveangels() > 0) { //si il y a des anges actifs
+            //On met à jour l'angel bonus
+            world.setAngelbonus(world.getAngelbonus() + (int) objet.getRatio() * (int) world.getActiveangels());
         };
     }
+    
+    /** Appliquer l'achat des Cash Upgrades
+     * @param product
+     * @param objet
+     */
+    public void UpdateUpgrade(ProductType product, PallierType objet) {
+        //Si type gain
+        if (objet.getTyperatio().value().equals("gain")) {
+            //Mettre à jour le revenu
+
+            product.setRevenu(product.getRevenu() * objet.getRatio());
+            //Si type vitesse
+        } else if (objet.getTyperatio().value().equals("vitesse")) {
+            //Mettre à jour la vitesse et le timeleft
+            product.setVitesse(product.getVitesse() / (int) objet.getRatio()); //la vitesse de production
+            product.setTimeleft(product.getTimeleft() / (int) objet.getRatio()); //le temps restant
+            // Si type ange
+        } else if (world.getActiveangels() > 0) { //si il y a des anges actifs
+            //On met à jour l'angel bonus
+            world.setAngelbonus(world.getAngelbonus() + (int) objet.getRatio() * (int) world.getActiveangels());
+        };
+    }
+    
+    /** Reset World pour utiliser les unlocks
+     * @param username
+     * @param world
+     * @throws JAXBException
+     * @throws FileNotFoundException
+     */
+    public void ResetWorld(String username, World world) throws JAXBException, FileNotFoundException{
+        //Enregistrer les valeurs avant de reset
+        double newAngel = (Math.floor(150 * Math.sqrt(world.getScore() / Math.pow(10, 5)) - world.getTotalangels())); //Calculer anges accumuler
+        double score = world.getScore();
+        //Reset le world
+        new File(username + "-world.xml").delete(); //Supprimer le fichier existant
+        World newWorld = readWorldFromXml(username); //Créer un nouveau ficher
+        //Enregistrer les valeurs à conserver
+        newWorld.setActiveangels(newAngel); //anges actifs
+        newWorld.setTotalangels(newAngel); //anges totales
+        newWorld.setScore(score); // score
+        
+        saveWorldToXML(newWorld, username);
+    }
 }
+
+    
