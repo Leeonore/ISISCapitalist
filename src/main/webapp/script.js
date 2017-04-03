@@ -38,7 +38,7 @@ $(document).ready(function () {
                         + '</div>'
                         + '<div class="description">'
                             + '<div class="revenu" id="r' + product.id + '">'
-                                +'<span class="revenuText">' + product.quantite*product.revenu + '</span>'
+                                +'<span class="revenuText">' + product.revenu * product.quantite *( 1 + currentWorld.activeangels * currentWorld.angelbonus/100) + '</span>'
                             +'</div>'
                             + '<div class="achat">'
                                 +'<div class="achatQuantite"><button class="btn btn-default" disabled type="submit">Buy x1</button></div>'
@@ -189,11 +189,9 @@ setInterval(function () {
                 $("#argent").html(formatNumber(currentWorld.money) + ' $');
                 $("#p" + product.id + " .quantite").html(product.quantite);
                 if (product.timeleft === 0) { //Si la production n'est pas en cours
-                    $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite));
+                    $("#p" + product.id + " .revenuText").html(product.revenu * product.quantite *( 1 + currentWorld.activeangels * currentWorld.angelbonus/100));
                 }
                 //Achat d'un produit coté serveur
-                
-            console.log(product.cout);
                 sendToServer("product", product);
             }
 
@@ -235,7 +233,7 @@ setInterval(function () {
             product.timeleft = -1; //Mettre la fin de production en attente
             calcScore(); //Calculer le nouveau score
             CalcCommutateur(); //Mettre à jour les achats possibles
-            $("#p" + product.id + " .revenuText").html((product.quantite * product.revenu)); //Mettre à jour affichage du revenu si achat pendant production
+            $("#p" + product.id + " .revenuText").html(product.revenu * product.quantite *( 1 + currentWorld.activeangels * currentWorld.angelbonus/100)); //Mettre à jour affichage du revenu si achat pendant production
             //Lancer la production si manager activé
             if (product.managerUnlocked === true) {
                 StartProduction(product.id - 1);
@@ -517,7 +515,7 @@ setInterval(function () {
             $(".TotalAngel").html(currentWorld.totalangels + "Total angels");
             $(".BonusAngel").html(currentWorld.angelbonus + "% Bonus par ange");
             var angel = Math.floor(150 * Math.sqrt(currentWorld.score / Math.pow(10, 5)) - currentWorld.totalangels);
-            $("#investor .modal-body").append('<button class="btn btn-default" onclick="ResetWorld()" type="submit">' + angel + ' angels </br> Restart pour les utiliser.</button>');
+            $("#Reset").html('<button class="btn btn-default" onclick="ResetWorld()" type="submit">' + angel + ' angels </br> Restart pour les utiliser.</button>');
         }
 
 ///////////// Gestion action client dans les fenêtres modales //////////////////
@@ -531,7 +529,7 @@ setInterval(function () {
             $.each(currentWorld.allunlocks.pallier, function (index, unlock) {
                 if ((unlock.unlocked === false) && premier) { //Regarder si le seuil du premier pallier bloqué est atteint
                     premier = false;
-                    seuilUnlock = unlock.seuil; //Va permettre de regarder si les produit on atteint le seuil
+                    seuilUnlock = unlock.seuil; //Va permettre de regarder si les produit ont atteint le seuil
                     UnlockAll = unlock;
                 }
             });
@@ -550,11 +548,10 @@ setInterval(function () {
             });
             if (nP === 6) {//Si tous les produits ont atteind le seuil
                 $.each(currentWorld.products.product, function (index, product) {
-                    ApplicBonus(UnlockAll, product);
-                }); //On applique le bonus à tous les produits
+                    ApplicBonus(UnlockAll, product); //On applique le bonus à tous les produits
+                }); 
                 toastr.success("Unlock " + UnlockAll.typeratio + " débloqué sur tous les produits");
             }
-
         }
     
     //Acheter un upgrades
@@ -578,6 +575,7 @@ setInterval(function () {
             // Mise à jour
             ListerUpgrades(); //de l'affichage
             InitBadgeUpgrades(); //du badge
+            sendToServer("cash", upgrade);
         }
         
     //Acheter dans fenêtre Ange Upgrades
@@ -629,14 +627,15 @@ setInterval(function () {
         
     //ResertWorld dans fenêtre Investor
         function ResetWorld() {
-        //    $.ajax(serveurUrl + "webresources/generic/world", {type: "DELETE", statusCode: {304: function () {
-        //                syncError("Echec du reset");
-        //            }}, error: function () {
-        //            syncError("Echec de la requete");
-        //        }}).done(function () {
-        //        location.reload();
-        //    });
-            window.location.reload();
+//            $.ajax(serveurUrl + "webresources/generic/world", {type: "DELETE", statusCode: {304: function () {
+//                        syncError("Echec du reset");
+//                    }}, error: function () {
+//                    syncError("Echec de la requete");
+//                }}).done(function () {
+//                location.reload();
+//            });
+           sendToServer("reset", currentWorld);
+           window.location.reload();
         }
         
     //Application des bonus débloqués ou acheté
@@ -645,7 +644,7 @@ setInterval(function () {
                 if (objet.typeratio === 'GAIN') { 
                     //Mettre à jour le revenu
                     product.revenu = product.revenu * objet.ratio; //Dans le xml
-                    $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite)); //dans l'affichage
+                    $("#p" + product.id + " .revenuText").html((product.revenu * product.quantite *( 1 + currentWorld.activeangels * currentWorld.angelbonus/100))); //dans l'affichage
             //Si type vitesse
                 } else if (objet.typeratio === 'VITESSE') {
                     //Mettre à jour la vitesse et le timeleft
@@ -664,10 +663,8 @@ setInterval(function () {
                     }
             // Si type ange
                 } else {
-                    if (currentWorld.activeangels > 0) { //si il y a des anges actifs
                         //On met à jour l'angel bonus
-                        currentWorld.angelbonus = currentWorld.angelbonus + objet.ratio * currentWorld.activeangels;                        
-                    }
+                        currentWorld.angelbonus = currentWorld.angelbonus + objet.ratio * currentWorld.activeangels;
                 }
         }
         

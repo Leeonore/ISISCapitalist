@@ -5,7 +5,7 @@
     <name>Farmland</name>
     <logo>icones/farmland.jpg</logo>
     <money>4</money>
-    <score>4</score>
+    <score>14505010000</score>
     <totalangels>0</totalangels>
     <activeangels>0</activeangels>
     <angelbonus>2</angelbonus>
@@ -260,19 +260,19 @@
     </products>
     <allunlocks>
         <pallier>
-            <name>Unlock1</name>
+            <name>Super Power !</name>
             <logo>icones/farmland.jpg</logo>
             <seuil>25</seuil>
-            <idcible>-1</idcible>
+            <idcible>0</idcible>
             <ratio>3</ratio>
             <typeratio>gain</typeratio>
             <unlocked>false</unlocked>
         </pallier>
         <pallier>
-            <name>Unlock2</name>
+            <name>Gros coup de pousse !</name>
             <logo>icones/farmland.jpg</logo>
             <seuil>50</seuil>
-            <idcible>-1</idcible>
+            <idcible>0</idcible>
             <ratio>3</ratio>
             <typeratio>vitesse</typeratio>
             <unlocked>false</unlocked>
