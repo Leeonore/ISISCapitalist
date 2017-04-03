@@ -116,6 +116,39 @@ public class Services {
     }
 
     /**
+     * Trouve un upgrade avec son nom
+     *
+     * @param world
+     * @param UpgradeName
+     * @return
+     */
+    public PallierType findUpgradeByName(World world, String UpgradeName) {
+        List<PallierType> upgrades = world.getUpgrades().getPallier();
+        for (PallierType upgrade : upgrades) {
+            if (upgrade.getName().equals(UpgradeName)) {
+                return upgrade;
+            }
+        }
+        return null;
+    }
+    
+    /* Trouve un angel avec son nom
+     *
+     * @param world
+     * @param UpgradeName
+     * @return
+     */
+    public PallierType findAngelByName(World world, String AngelName) {
+        List<PallierType> angels = world.getAngelupgrades().getPallier();
+        for (PallierType angel : angels) {
+            if (angel.getName().equals(AngelName)) {
+                return angel;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Mettre à jour un produit (production ou achat)
      *
      * @param username = pseudo du joueur
@@ -166,15 +199,15 @@ public class Services {
                 }
                 List<PallierType> Unlocks = product.getPalliers().getPallier();
                 for (PallierType unlock : Unlocks) {
-                    if (unlock.getSeuil() <= (product.getQuantite()+ qtchange) && unlock.isUnlocked() == false) { // si on a atteint le pallier et qu'il n'est pas débloqué
+                    if (unlock.getSeuil() <= (product.getQuantite() + qtchange) && unlock.isUnlocked() == false) { // si on a atteint le pallier et qu'il n'est pas débloqué
                         unlock.setUnlocked(true);
-                        UpdateUnlock(product, unlock);
+                        UpdateBonus(product, unlock);
                     }
                 };
             };
             if (nP == 6) {//Si tous les produits ont atteint un seuil général
                 for (ProductType productAllUnlock : products) {// On boucle sur les produits {
-                    UpdateUnlock(productAllUnlock, UnlocksAll); //On applique le bonus à tous les produits
+                    UpdateBonus(productAllUnlock, UnlocksAll); //On applique le bonus à tous les produits
                 };
             }
         } else {// sinon c’est qu’il s’agit d’un lancement de production.
@@ -217,6 +250,54 @@ public class Services {
     }
 
     /**
+     * Appliquer l'achat d'un upgrade
+     *
+     * @param username
+     * @param upgrade
+     * @throws JAXBException
+     * @throws FileNotFoundException
+     */
+    public void UpdateUpgrade(String username, PallierType newupgrade) throws JAXBException, FileNotFoundException {
+        World world = getWorld(username);
+        PallierType upgrade = findUpgradeByName(world, newupgrade.getName());
+        upgrade.setUnlocked(true);
+        //Appliquer le bonus
+        List<ProductType> produits = world.getProducts().getProduct();
+        if (upgrade.getIdcible() > 0) { //Si upgrade concerne un produit
+            ProductType product = produits.get(upgrade.getIdcible() - 1);
+            UpdateBonus(product, upgrade);
+        } else if (upgrade.getIdcible() == 0) { //Si upgrade concerne tous les produits
+            for (ProductType product : produits) {
+                UpdateBonus(product, upgrade);
+            };
+        } else { //Si l'upgrade concerne les anges
+            UpdateBonus(null, upgrade);
+        }
+        world.setMoney(world.getMoney() - upgrade.getSeuil()); //Mettre à jour argent disponible
+        saveWorldToXML(world, username);
+    }
+
+    public void UpdateAngel(String username, PallierType newangel) throws JAXBException, FileNotFoundException{
+        World world = getWorld(username);
+        PallierType angel = findAngelByName(world, newangel.getName());
+        //Mettre à jour les anges actifs
+            world.setActiveangels(world.getActiveangels() - angel.getSeuil());
+
+            //Mettre à jour l'ange
+            angel.setUnlocked(true); //dans le document
+            List<ProductType> produits = world.getProducts().getProduct(); // Liste des produits
+            //Appliquer le bonus
+            if (angel.getIdcible() > 0) { //Si upgrade concerne un produit
+                UpdateBonus(produits.get(angel.getIdcible() - 1), angel);
+            } else if (angel.getIdcible() == 0) { //Si upgrade concerne tous les produits
+                for (ProductType produit : produits) {
+                    UpdateBonus(produit, angel);
+                };
+            }
+        saveWorldToXML(world, username);
+    }
+    
+    /**
      * Mettre à jour le score
      *
      * @param world
@@ -235,7 +316,9 @@ public class Services {
         world.setLastupdate(System.currentTimeMillis()); //Enregistrer la date de la derniere mise à jour
     }
 
-    /**Calculer le score après production
+    /**
+     * Calculer le score après production
+     *
      * @param product
      * @param duree
      */
@@ -247,7 +330,7 @@ public class Services {
             product.setTimeleft(product.getTimeleft() - duree); //Mettre à jour le timeleft
             if (product.getTimeleft() <= 0) { //Si la production est finie
                 product.setTimeleft(0); //Remettre le timeleft à 0
-                world.setMoney(world.getMoney() + (product.getRevenu() * product.getQuantite()*(1+world.getActiveangels()*world.getAngelbonus()/100))); //Mettre à jour money
+                world.setMoney(world.getMoney() + (product.getRevenu() * product.getQuantite() * (1 + world.getActiveangels() * world.getAngelbonus() / 100))); //Mettre à jour money
                 product.setQuantite(product.getQuantite() + quantiteAttente.get(product.getId() - 1)); //Mettre à jour quantité si achat pendant production
                 quantiteAttente.set(product.getId() - 1, 0); //réinitialiser
             } else if (product.getTimeleft() != 0) { //Si la production est en cours
@@ -257,11 +340,13 @@ public class Services {
         }
     }
 
-    /**Appliquer les Unlocks si ils se débloquent
+    /**
+     * Appliquer les bonus débloqués/achetés
+     *
      * @param product
      * @param objet
      */
-    public void UpdateUnlock(ProductType product, PallierType objet) {
+    public void UpdateBonus(ProductType product, PallierType objet) {
         //Si type gain
         if (objet.getTyperatio().value().equals("gain")) {
             //Mettre à jour le revenu
@@ -277,36 +362,15 @@ public class Services {
             world.setAngelbonus(world.getAngelbonus() + (int) objet.getRatio() * (int) world.getActiveangels());
         };
     }
-    
-    /** Appliquer l'achat des Cash Upgrades
-     * @param product
-     * @param objet
-     */
-    public void UpdateUpgrade(ProductType product, PallierType objet) {
-        //Si type gain
-        if (objet.getTyperatio().value().equals("gain")) {
-            //Mettre à jour le revenu
-
-            product.setRevenu(product.getRevenu() * objet.getRatio());
-            //Si type vitesse
-        } else if (objet.getTyperatio().value().equals("vitesse")) {
-            //Mettre à jour la vitesse et le timeleft
-            product.setVitesse(product.getVitesse() / (int) objet.getRatio()); //la vitesse de production
-            product.setTimeleft(product.getTimeleft() / (int) objet.getRatio()); //le temps restant
-            // Si type ange
-        } else if (world.getActiveangels() > 0) { //si il y a des anges actifs
-            //On met à jour l'angel bonus
-            world.setAngelbonus(world.getAngelbonus() + (int) objet.getRatio() * (int) world.getActiveangels());
-        };
-    }
-    
-    /** Reset World pour utiliser les unlocks
+    /**
+     * Reset World pour utiliser les unlocks
+     *
      * @param username
      * @param world
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-    public void ResetWorld(String username, World world) throws JAXBException, FileNotFoundException{
+    public void ResetWorld(String username, World world) throws JAXBException, FileNotFoundException {
         //Enregistrer les valeurs avant de reset
         double newAngel = (Math.floor(150 * Math.sqrt(world.getScore() / Math.pow(10, 5)) - world.getTotalangels())); //Calculer anges accumuler
         double score = world.getScore();
@@ -317,9 +381,7 @@ public class Services {
         newWorld.setActiveangels(newAngel); //anges actifs
         newWorld.setTotalangels(newAngel); //anges totales
         newWorld.setScore(score); // score
-        
+
         saveWorldToXML(newWorld, username);
     }
 }
-
-    
