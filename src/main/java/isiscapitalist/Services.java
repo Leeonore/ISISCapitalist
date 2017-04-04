@@ -3,19 +3,9 @@ package isiscapitalist;
 import generated.PallierType;
 import generated.ProductType;
 import generated.World;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.bind.Unmarshaller;
+import java.io.*;
+import java.util.*;
+import javax.xml.bind.*;
 
 public class Services {
 
@@ -253,7 +243,7 @@ public class Services {
      * Appliquer l'achat d'un upgrade
      *
      * @param username
-     * @param upgrade
+     * @param newupgrade
      * @throws JAXBException
      * @throws FileNotFoundException
      */
@@ -330,7 +320,9 @@ public class Services {
             product.setTimeleft(product.getTimeleft() - duree); //Mettre à jour le timeleft
             if (product.getTimeleft() <= 0) { //Si la production est finie
                 product.setTimeleft(0); //Remettre le timeleft à 0
-                world.setMoney(world.getMoney() + (product.getRevenu() * product.getQuantite() * (1 + world.getActiveangels() * world.getAngelbonus() / 100))); //Mettre à jour money
+                double gain =(product.getRevenu() * product.getQuantite() * (1 + world.getActiveangels() * world.getAngelbonus() / 100));
+                world.setMoney(world.getMoney() + gain); //Mettre à jour money
+                world.setScore(world.getScore() + gain); //Mettre à jour le score
                 product.setQuantite(product.getQuantite() + quantiteAttente.get(product.getId() - 1)); //Mettre à jour quantité si achat pendant production
                 quantiteAttente.set(product.getId() - 1, 0); //réinitialiser
             } else if (product.getTimeleft() != 0) { //Si la production est en cours
@@ -370,13 +362,18 @@ public class Services {
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-    public void ResetWorld(String username, World world) throws JAXBException, FileNotFoundException {
+public void ResetWorld(String username, World world) throws JAXBException, FileNotFoundException, IOException {      
         //Enregistrer les valeurs avant de reset
         double newAngel = (Math.floor(150 * Math.sqrt(world.getScore() / Math.pow(10, 5)) - world.getTotalangels())); //Calculer anges accumuler
         double score = world.getScore();
+        
         //Reset le world
-        new File(username + "-world.xml").delete(); //Supprimer le fichier existant
-        World newWorld = readWorldFromXml(username); //Créer un nouveau ficher
+            cont = JAXBContext.newInstance(World.class);
+            u = cont.createUnmarshaller();;
+            InputStream input = getClass().getClassLoader().getResourceAsStream("world.xml");
+            World newWorld = (World) u.unmarshal(input);
+            
+        
         //Enregistrer les valeurs à conserver
         newWorld.setActiveangels(newAngel); //anges actifs
         newWorld.setTotalangels(newAngel); //anges totales

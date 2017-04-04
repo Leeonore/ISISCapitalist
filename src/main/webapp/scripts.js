@@ -100,8 +100,6 @@ $(document).ready(function () {
             });
         
         //Gestion du curseur sur les logo
-        
-            
             $(".logoProduit").mouseover(function (){
                 id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
                 if (currentWorld.products.product[id].quantite>0){
@@ -111,6 +109,10 @@ $(document).ready(function () {
             $(".logoProduit").mouseout(function (){
                  document.body.style.cursor = 'auto';
              });
+    });
+    //Recharger page lorsqu'on a quitté l'onglet
+    window.addEventListener('focus', function () {
+        window.location.reload();
     });
 
     //Gestion clique du commutateur
@@ -515,7 +517,11 @@ setInterval(function () {
             $(".TotalAngel").html(currentWorld.totalangels + " Total angels");
             $(".ActifAngel").html(currentWorld.activeangels + " Anges actifs");
             $(".BonusAngel").html(currentWorld.angelbonus + "% Bonus par ange");
-            var angel = Math.floor(150 * Math.sqrt(currentWorld.score / Math.pow(10, 5)) - currentWorld.totalangels);
+            var angel = Math.floor(
+                    150 * 
+                    Math.sqrt(currentWorld.score / Math.pow(10, 15))
+                    - currentWorld.totalangels
+                    );
             $("#Reset").html('<button class="btn btn-default" onclick="ResetWorld()" type="submit">' + angel + ' angels </br> Restart pour les utiliser.</button>');
         }
 
