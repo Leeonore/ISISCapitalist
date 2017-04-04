@@ -548,6 +548,7 @@ setInterval(function () {
                 });
             });
             if (nP === 6) {//Si tous les produits ont atteind le seuil
+                UnlockAll.unlocked = true;
                 $.each(currentWorld.products.product, function (index, product) {
                     ApplicBonus(UnlockAll, product); //On applique le bonus à tous les produits
                 }); 
@@ -680,6 +681,7 @@ setInterval(function () {
             $('#TextUser').val(username); //On l'affiche dans la zone de texte
         }else { //Si il n'y a pas d'username
             username = "Poney" + Math.floor(Math.random() * 10000); //On en crée un au hazard
+            $('#TextUser').val(username);
             localStorage.setItem("username", username); //On l'affiche dans la zone de texte
         }
         $("#TextUser").change(function () { //Si on change l'username
