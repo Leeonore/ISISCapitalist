@@ -5,6 +5,9 @@ import generated.ProductType;
 import generated.World;
 import java.io.*;
 import java.util.*;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 import javax.xml.bind.*;
 
 public class Services {
@@ -122,7 +125,7 @@ public class Services {
         return null;
     }
     
-    /* Trouve un angel avec son nom
+    /** Trouve un angel avec son nom
      *
      * @param world
      * @param UpgradeName
@@ -222,19 +225,20 @@ public class Services {
     public Boolean updateManager(String username, PallierType newmanager) throws JAXBException, FileNotFoundException {
         World world = getWorld(username); // aller chercher le monde qui correspond au joueur
         PallierType manager = findManagerByName(world, newmanager.getName()); // trouver dans ce monde, le manager équivalent passé en parametre
-
-        if (manager == null) {
-            return false;
-        }
+        if (manager == null) {return false;}
+        
         manager.setUnlocked(true); // débloquer ce manager
 
         ProductType product = findProductById(world, manager.getIdcible()); // trouver le produit correspondant au manager
-        if (product == null) {
-            return false;
-        }
-
+        if (product == null) {return false;}
+        
         product.setManagerUnlocked(true); // débloquer le manager de ce produit
         world.setMoney(world.getMoney() - manager.getSeuil()); // soustraire de l'argent du joueur le cout du manager
+        System.out.println("Money =" + world.getMoney());
+        System.out.println("manager.unlocked =" + manager.isUnlocked());
+        System.out.println("product.unlocked =" + product.isManagerUnlocked());
+        
+        UpdateScore(world);
         saveWorldToXML(world, username); // sauvegarder les changements au monde
         return true;
     }
@@ -267,6 +271,12 @@ public class Services {
         saveWorldToXML(world, username);
     }
 
+    /** Mettre à jour l'achat d'angel upgrade
+     * @param username
+     * @param newangel
+     * @throws JAXBException
+     * @throws FileNotFoundException
+     */
     public void UpdateAngel(String username, PallierType newangel) throws JAXBException, FileNotFoundException{
         World world = getWorld(username);
         PallierType angel = findAngelByName(world, newangel.getName());
@@ -354,6 +364,7 @@ public class Services {
             world.setAngelbonus(world.getAngelbonus() + (int) objet.getRatio() * (int) world.getActiveangels());
         };
     }
+    
     /**
      * Reset World pour utiliser les unlocks
      *
@@ -362,7 +373,7 @@ public class Services {
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-public void ResetWorld(String username, World world) throws JAXBException, FileNotFoundException, IOException {      
+    public void ResetWorld(String username, World world) throws JAXBException, FileNotFoundException, IOException {      
         //Enregistrer les valeurs avant de reset
         double newAngel = (Math.floor(150 * Math.sqrt(world.getScore() / Math.pow(10, 5)) - world.getTotalangels())); //Calculer anges accumuler
         double score = world.getScore();
@@ -381,4 +392,5 @@ public void ResetWorld(String username, World world) throws JAXBException, FileN
 
         saveWorldToXML(newWorld, username);
     }
+    
 }

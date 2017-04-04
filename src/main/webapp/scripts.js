@@ -196,7 +196,11 @@ setInterval(function () {
                 //Achat d'un produit coté serveur
                 sendToServer("product", product);
             }
-
+            //Remettre à jour les badges
+            InitBadgeManager();
+            InitBadgeUpgrades();
+            InitBadgeAnge();
+            
             CalcCommutateur(); //Recaculer les prix
             GestionBuyButton(product); //Mettre à jour cliquabilité des boutons d'achat
             DebloqUnlock(); //Gerer les unlocks
@@ -232,6 +236,7 @@ setInterval(function () {
             InitBadgeManager();
             // Afficher badge si upgrades débloquées
             InitBadgeUpgrades();
+            InitBadgeAnge();
             product.timeleft = -1; //Mettre la fin de production en attente
             calcScore(); //Calculer le nouveau score
             CalcCommutateur(); //Mettre à jour les achats possibles
@@ -339,7 +344,7 @@ setInterval(function () {
                 //Si il a l'argent nécessaire mais que le manager n'est pas engagé
                 if ((pallier.seuil <= currentWorld.money) && (pallier.unlocked === false)) {
                     $("#cashbutton .badge").text("New");
-                }
+                } 
             });
         } 
         
@@ -581,7 +586,11 @@ setInterval(function () {
             $("#argent").html(formatNumber(currentWorld.money) + ' $'); //dans l'affichage
             // Mise à jour
             ListerUpgrades(); //de l'affichage
-            InitBadgeUpgrades(); //du badge
+            //Remettre à jour les badges
+            InitBadgeManager();
+            InitBadgeUpgrades();
+            InitBadgeAnge();
+            
             sendToServer("upgrade", upgrade);
         }
         
@@ -605,14 +614,24 @@ setInterval(function () {
                     ApplicBonus(ange, product);
                 });
             }
+            //Remettre à jour les badges
+            InitBadgeManager();
+            InitBadgeUpgrades();
+            InitBadgeAnge();
+            
             sendToServer("angel", ange);
         }
     
     //Engager un manager
         function Hire(id) {
+            
+            
             $("#managersbutton .badge").text(""); // Retirer le badge "new"
             var manager = currentWorld.managers.pallier[id];
-
+            
+            //Achat du manager coté serveur
+            sendToServer("manager", manager);
+            
             //Mettre à jour argent disponible
             currentWorld.money = currentWorld.money - manager.seuil; //dans le document
             $("#argent").html(formatNumber(currentWorld.money) + ' $'); //dans l'affichage
@@ -624,10 +643,11 @@ setInterval(function () {
             if (currentWorld.products.product[id].quantite > 0) {
                 StartProduction(id); //Lancer la production du produit
             }
-
-            //Achat du manager coté serveur
-            sendToServer("manager", manager);
-
+            //Remettre à jour les badges
+            InitBadgeManager();
+            InitBadgeUpgrades();
+            InitBadgeAnge();
+            
             //Info bulle
             toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
             toastr.success("Manager engagé ! ");

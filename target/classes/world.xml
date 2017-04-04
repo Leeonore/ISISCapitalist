@@ -319,7 +319,7 @@
             <name>Je le veau bien!</name>
             <logo>icones/vache.jpg</logo>
             <seuil>2000000</seuil>
-            <idcible>3</idcible>
+            <idcible>4</idcible>
             <ratio>3</ratio>
             <typeratio>gain</typeratio>
             <unlocked>false</unlocked>

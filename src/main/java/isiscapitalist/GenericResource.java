@@ -109,9 +109,10 @@ public class GenericResource {
     @PUT
     @Path("/manager")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void pallier(@Context HttpServletRequest request, String content) throws JAXBException, FileNotFoundException{
+    public void manager(@Context HttpServletRequest request, String content) throws JAXBException, FileNotFoundException{
         PallierType pallier = new Gson().fromJson(content, PallierType.class);
         String username = request.getHeader("X-user");
+       // System.out.println("manager" + pallier.getName());
         service.updateManager(username, pallier);
     }
     @PUT
