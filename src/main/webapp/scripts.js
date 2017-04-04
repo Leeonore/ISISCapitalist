@@ -100,8 +100,6 @@ $(document).ready(function () {
             });
         
         //Gestion du curseur sur les logo
-        
-            
             $(".logoProduit").mouseover(function (){
                 id = $(this).parents(".ProduitPresentation").attr("id").substr(1) - 1;
                 if (currentWorld.products.product[id].quantite>0){
@@ -111,6 +109,10 @@ $(document).ready(function () {
             $(".logoProduit").mouseout(function (){
                  document.body.style.cursor = 'auto';
              });
+    });
+    //Recharger page lorsqu'on a quitté l'onglet
+    window.addEventListener('focus', function () {
+        window.location.reload();
     });
 
     //Gestion clique du commutateur
@@ -194,7 +196,11 @@ setInterval(function () {
                 //Achat d'un produit coté serveur
                 sendToServer("product", product);
             }
-
+            //Remettre à jour les badges
+            InitBadgeManager();
+            InitBadgeUpgrades();
+            InitBadgeAnge();
+            
             CalcCommutateur(); //Recaculer les prix
             GestionBuyButton(product); //Mettre à jour cliquabilité des boutons d'achat
             DebloqUnlock(); //Gerer les unlocks
@@ -230,6 +236,7 @@ setInterval(function () {
             InitBadgeManager();
             // Afficher badge si upgrades débloquées
             InitBadgeUpgrades();
+            InitBadgeAnge();
             product.timeleft = -1; //Mettre la fin de production en attente
             calcScore(); //Calculer le nouveau score
             CalcCommutateur(); //Mettre à jour les achats possibles
@@ -337,7 +344,7 @@ setInterval(function () {
                 //Si il a l'argent nécessaire mais que le manager n'est pas engagé
                 if ((pallier.seuil <= currentWorld.money) && (pallier.unlocked === false)) {
                     $("#cashbutton .badge").text("New");
-                }
+                } 
             });
         } 
         
@@ -515,7 +522,11 @@ setInterval(function () {
             $(".TotalAngel").html(currentWorld.totalangels + " Total angels");
             $(".ActifAngel").html(currentWorld.activeangels + " Anges actifs");
             $(".BonusAngel").html(currentWorld.angelbonus + "% Bonus par ange");
-            var angel = Math.floor(150 * Math.sqrt(currentWorld.score / Math.pow(10, 5)) - currentWorld.totalangels);
+            var angel = Math.floor(
+                    150 * 
+                    Math.sqrt(currentWorld.score / Math.pow(10, 15))
+                    - currentWorld.totalangels
+                    );
             $("#Reset").html('<button class="btn btn-default" onclick="ResetWorld()" type="submit">' + angel + ' angels </br> Restart pour les utiliser.</button>');
         }
 
@@ -575,7 +586,11 @@ setInterval(function () {
             $("#argent").html(formatNumber(currentWorld.money) + ' $'); //dans l'affichage
             // Mise à jour
             ListerUpgrades(); //de l'affichage
-            InitBadgeUpgrades(); //du badge
+            //Remettre à jour les badges
+            InitBadgeManager();
+            InitBadgeUpgrades();
+            InitBadgeAnge();
+            
             sendToServer("upgrade", upgrade);
         }
         
@@ -598,15 +613,27 @@ setInterval(function () {
                 $.each(currentWorld.products.product, function (index, product) {
                     ApplicBonus(ange, product);
                 });
+            } else { //Si upgrade concerne les ange
+                ApplicBonus(ange, null);
             }
+            //Remettre à jour les badges
+            InitBadgeManager();
+            InitBadgeUpgrades();
+            InitBadgeAnge();
+            
             sendToServer("angel", ange);
         }
     
     //Engager un manager
         function Hire(id) {
+            
+            
             $("#managersbutton .badge").text(""); // Retirer le badge "new"
             var manager = currentWorld.managers.pallier[id];
-
+            
+            //Achat du manager coté serveur
+            sendToServer("manager", manager);
+            
             //Mettre à jour argent disponible
             currentWorld.money = currentWorld.money - manager.seuil; //dans le document
             $("#argent").html(formatNumber(currentWorld.money) + ' $'); //dans l'affichage
@@ -618,10 +645,11 @@ setInterval(function () {
             if (currentWorld.products.product[id].quantite > 0) {
                 StartProduction(id); //Lancer la production du produit
             }
-
-            //Achat du manager coté serveur
-            sendToServer("manager", manager);
-
+            //Remettre à jour les badges
+            InitBadgeManager();
+            InitBadgeUpgrades();
+            InitBadgeAnge();
+            
             //Info bulle
             toastr.options = {"positionClass": "toast-bottom-left", "timeOut": "3000"};
             toastr.success("Manager engagé ! ");

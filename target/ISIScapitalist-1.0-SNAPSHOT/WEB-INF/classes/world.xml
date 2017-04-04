@@ -19,7 +19,7 @@
             <croissance>1.07</croissance>
             <revenu>1</revenu>
             <vitesse>1000</vitesse>
-            <quantite>0</quantite>
+            <quantite>23</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
             <palliers>
@@ -60,7 +60,7 @@
             <croissance>1.15</croissance>
             <revenu>60</revenu>
             <vitesse>5000</vitesse>
-            <quantite>0</quantite>
+            <quantite>23</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
             <palliers>
@@ -319,7 +319,7 @@
             <name>Je le veau bien!</name>
             <logo>icones/vache.jpg</logo>
             <seuil>2000000</seuil>
-            <idcible>3</idcible>
+            <idcible>4</idcible>
             <ratio>3</ratio>
             <typeratio>gain</typeratio>
             <unlocked>false</unlocked>
