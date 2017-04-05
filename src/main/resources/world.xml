@@ -19,7 +19,7 @@
             <croissance>1.07</croissance>
             <revenu>1</revenu>
             <vitesse>1000</vitesse>
-            <quantite>23</quantite>
+            <quantite>0</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
             <palliers>
@@ -60,7 +60,7 @@
             <croissance>1.15</croissance>
             <revenu>60</revenu>
             <vitesse>5000</vitesse>
-            <quantite>23</quantite>
+            <quantite>0</quantite>
             <timeleft>0</timeleft>
             <managerUnlocked>false</managerUnlocked>
             <palliers>
